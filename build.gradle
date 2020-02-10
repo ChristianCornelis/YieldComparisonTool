@@ -12,6 +12,7 @@ repositories {
 
 dependencies {
     testImplementation('junit:junit:4.13')
+    implementation 'com.opencsv:opencsv:5.1'
 }
 
 checkstyle {
