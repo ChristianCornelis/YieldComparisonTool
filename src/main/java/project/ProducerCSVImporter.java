@@ -79,19 +79,4 @@ public class ProducerCSVImporter extends CSVImporter {
                 "yields=" + yields +
                 '}';
     }
-
-    /**
-     * Driver program.
-     * @param args args for prog
-     */
-    public static void main(String[] args) {
-        String fileName = args[0];
-        int sourceUnits = Integer.parseInt(args[1]);
-        try {
-            ProducerCSVImporter pci = new ProducerCSVImporter(fileName, sourceUnits);
-            pci.parse();
-        } catch (FileNotFoundException e) {
-            System.err.println(e.getMessage());
-        }
-    }
 }
