@@ -64,7 +64,8 @@ public class YieldComparisonToolDriver {
             System.out.println("Cannot perform comparison.");
             return;
         }
-        int[] validComparisonActions = {IMPORT_KG_PER_HA, IMPORT_LB_PER_AC, /*IMPORT_BU_PER_AC,*/ CANCEL_TASK};  //Todo: Implement comparison in Bu/ac
+        //Todo: Implement comparison in Bu/ac
+        int[] validComparisonActions = {IMPORT_KG_PER_HA, IMPORT_LB_PER_AC, /*IMPORT_BU_PER_AC,*/ CANCEL_TASK};
         int comparisonUnits = inputHandler.chooseAction(
                 inputHandler.unitsPrompt("Choose the units you wish to see yield differences in:\n"),
                 validComparisonActions
