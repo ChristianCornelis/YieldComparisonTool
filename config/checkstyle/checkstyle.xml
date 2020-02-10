@@ -45,12 +45,12 @@
     <!-- Checks for Size Violations.                    -->
     <!-- See https://checkstyle.org/config_sizes.html -->
     <module name="FileLength">
-        <property name="max" value="1500"/> 
+        <property name="max" value="1500"/>
     </module>
-    
+
     <module name="LineLength">
       <property name="fileExtensions" value="java"/>
-     <property name="max" value="120"/>
+     <property name="max" value="125"/>
     </module>
 
     <!-- Checks for whitespace                               -->
@@ -123,7 +123,7 @@
         <module name="MethodParamPad"/>
         <module name="NoWhitespaceAfter"/>
         <module name="NoWhitespaceBefore"/>
-        <module name="OperatorWrap"/>
+<!--        <module name="OperatorWrap"/>-->
         <module name="ParenPad"/>
         <module name="TypecastParenPad"/>
         <module name="WhitespaceAfter"/>
@@ -146,11 +146,11 @@
         <!-- See https://checkstyle.org/config_coding.html -->
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
-        <module name="HiddenField"/>
+<!--        <module name="HiddenField"/>-->
         <module name="IllegalInstantiation"/>
         <module name="InnerAssignment"/>
-        <module name="MagicNumber"/>
-        <module name="MissingSwitchDefault"/>
+<!--        <module name="MagicNumber"/>-->
+<!--        <module name="MissingSwitchDefault"/>-->
         <module name="MultipleVariableDeclarations"/>
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
@@ -167,7 +167,7 @@
         <!-- See https://checkstyle.org/config_misc.html -->
         <module name="ArrayTypeStyle"/>
         <!--<module name="FinalParameters"/>-->
-        <module name="TodoComment"/>
+<!--        <module name="TodoComment"/>-->
         <module name="UpperEll"/>
 
     </module>
