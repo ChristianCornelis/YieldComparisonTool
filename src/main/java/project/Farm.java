@@ -52,6 +52,14 @@ public class Farm {
     }
 
     /**
+     * Returns the crop instance variable.
+     * @return Crop
+     */
+    public Crop getCrop() {
+        return crop;
+    }
+
+    /**
      * Returns a string containing all attributes of the farm class.
      * @return string containing all info.
      */
