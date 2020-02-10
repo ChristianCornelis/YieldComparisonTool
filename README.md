@@ -9,6 +9,7 @@ I would suggest running via `gradle run -q --console=plain` to reduce the overla
 ### Importing Producer Data
 - When prompted for a **Producer** CSV to import (main menu choice 0), you must specify `src/main/resources/gjc_farms_2013_to_2019_bushels.csv`, but keep in mind that the path is relative and may need to be different.
     - This CSVs units are **BUSHELS PER ACRE**, or menu choice **2** when prompted for units.
+- Some of the yields from StatsCan were left as improperly-formatted values. These will result in error messages when importing and are expected.
     
 ### Importing Statistics Canada Data
 - When prompted for a **Statistics Canada (StatsCan)** CSV to import (main menu choice 1), you must specify `src/main/resources/statscan_yields_metric_1999_to_2019.csv`, but again, the path is relative.
@@ -32,11 +33,13 @@ I would suggest running via `gradle run -q --console=plain` to reduce the overla
         - See the YieldComparisonToolDriver class method importProducerCSV().
     - Given that I have input an incorrect path to the CSV file to be imported when prompted, then I am informed of my mistake.
         - See the CSVImporter constructor, which throws an exception. This is then passed all the way up to the importProducerCSV() method.
-    - Given that I do not know what units my yields are in, when I choose that I do not know  them, the import is cancelled.
+    - Given that I do not know what units the Statistics Canada yields are in, when I choose to cancel the import, then no data is imported.
 - As a producer, I want to see the margins that my crop production was higher or lower than the national average
+    - Given that both StatsCan and producer yields are loaded, then I am able to select a unit to compare yields of certain crops in.
+        - See the YieldComparisonToolDriver, which performs this functionality.
     - Given that I decided on a specific year to compare yields in, when I enter the year, then I am able to choose what crops to compare.
         - See the YieldComparator class, which is utilized by compareYields() in YieldComparisonToolDriver.
-    -Given that I decided on a specific year to compare yields in, when I enter the year and it is not present in both sets of data, I am notified valid years that can be input.
+    -Given that I decided on a specific year to compare yields in, when I enter the year and it is not present in both sets of data, I am notified of valid years that can be input.
     - Given that I decided on a specific crop to compare yields against, when I enter a crop type that is present in my production data and StatsCan data, then I am able to see the differences in the yields.
     - Given that I decided on a specific crop to compare yields against, when I enter a crop that is not present in both my production data and StatsCan data, then I am notified that the data is not present to compare this crop.
 - As an administrator, I want to be able to add Statistics Canada records of crop production to increase the data available for producers to compare against.
@@ -46,7 +49,7 @@ I would suggest running via `gradle run -q --console=plain` to reduce the overla
          - See the YieldComparisonToolDriver class method importStatsCanCSV().
     - Given that I have input an incorrect path to the CSV file to be imported when prompted, then I am informed of my mistake.
             - See the CSVImporter constructor, which throws an exception. This is then passed all the way up to the importStatsCanCSV() method.
-    - Given that I do not know what units the Statistics Canada yields are in, when I choose that I do not know  them, the import is cancelled.
+    - Given that I do not know what units the Statistics Canada yields are in, when I choose to cancel the import, then no data is imported.
 
 ## Analysis Of Implementation
 ### Single Responsibility Principle

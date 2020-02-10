@@ -97,20 +97,4 @@ public class StatsCanCSVImporter extends CSVImporter {
                 "yields=" + yields +
                 '}';
     }
-
-    /**
-     * Driver program.
-     * @param args args for prog
-     */
-    public static void main(String[] args) {
-        String fileName = args[0];
-        int sourceUnits = Integer.parseInt(args[1]);
-        int targetUnits = Integer.parseInt(args[2]);
-        try {
-            StatsCanCSVImporter sci = new StatsCanCSVImporter(fileName, sourceUnits);
-            sci.parse();
-        } catch (FileNotFoundException e) {
-            System.err.println(e.getMessage());
-        }
-    }
 }
