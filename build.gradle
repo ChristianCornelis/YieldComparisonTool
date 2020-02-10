@@ -19,3 +19,15 @@ checkstyle {
     toolVersion = "8.26"
 }
 
+apply plugin: 'java'
+
+task(run, dependsOn: 'classes', type: JavaExec) {
+    main = 'project.YieldComparisonToolDriver'
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+}
+
+compileJava {
+    options.compilerArgs << '-Xlint:unchecked'
+}
+

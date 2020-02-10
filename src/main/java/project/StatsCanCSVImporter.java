@@ -4,27 +4,15 @@ package project;
 import project.Exceptions.YieldInvalidException;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Class for importing data from Stastistics Canada.
  */
 public class StatsCanCSVImporter extends CSVImporter {
-
-//    /**
-//     * Constructor.
-//     * @param filename the filename to parse
-//     */
-//    public StatsCanCSVImporter(String filename) {
-//        try {
-//            csvReader = new CSVReader(new FileReader(filename));
-//        } catch (FileNotFoundException e) {
-//            System.err.println("Error: File " + filename + " does not exist");
-//        }
-//        yields = new HashMap<Integer, ArrayList<Crop>>();
-//        targetUnits = Crop.KG_PER_HA;
-//        sourceUnits = Crop.KG_PER_HA;
-//    }
-
+    private Map<Integer, ArrayList<Crop>> yields;
     /**
      * Constructor with filename, target units, and source units.
      * @param filename The file to read from.
@@ -33,6 +21,7 @@ public class StatsCanCSVImporter extends CSVImporter {
      */
     public StatsCanCSVImporter(String filename, int su) throws FileNotFoundException {
         super(filename, su);
+        yields = new HashMap<>();
     }
 
     /**
@@ -59,17 +48,55 @@ public class StatsCanCSVImporter extends CSVImporter {
                 double yield = 0;
                 try {
                     yield = parseYield(tokens[tokenCnt]);
-//                    yield = convertYield(yield, cropName);
                 } catch (YieldInvalidException e) {
-                    System.err.println(e.getMessage());
+                    System.out.println(e.getMessage());
                 }
                 Crop toPut = new Crop(cropName, yield, super.getSourceUnits());
                 System.out.println("Adding crop " + cropName);
-                int year = parseYear(yearString);
-                super.setYield(year, toPut);
+                int year = 0;
+                try {
+                    year = parseYear(yearString);
+                } catch (NumberFormatException e) {
+                    System.out.println(e.getMessage());
+                    continue;
+                }
+                setYield(year, toPut);
                 tokenCnt++;
             }
         }
+    }
+
+    /**
+     * Sets a new yield for a specific crop in a given year.
+     * @param year the year to add the yield to
+     * @param toPut Crop object containing yield info.
+     */
+    public void setYield(int year, Crop toPut) {
+        if (!yields.containsKey(year)) {
+            yields.put(year, new ArrayList<>() {{ add(toPut); }});
+        } else {
+            yields.get(year).add(toPut);
+        }
+    }
+
+    /**
+     * Getter for yields.
+     * @return the yields map.
+     */
+    public Map<Integer, ArrayList<Crop>> getYields() {
+        return yields;
+    }
+
+    /**
+     * ToString method. Calls on the superclass toString.
+     * @return string representation of the class.
+     */
+    @Override
+    public String toString() {
+        return super.toString() +
+                "\nStatsCanCSVImporter{" +
+                "yields=" + yields +
+                '}';
     }
 
     /**
@@ -86,6 +113,5 @@ public class StatsCanCSVImporter extends CSVImporter {
         } catch (FileNotFoundException e) {
             System.err.println(e.getMessage());
         }
-        System.out.println("ah");
     }
 }

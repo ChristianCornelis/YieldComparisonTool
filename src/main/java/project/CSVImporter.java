@@ -16,9 +16,8 @@ import project.Exceptions.YieldInvalidException;
  */
 public abstract class CSVImporter implements Importer {
     private CSVReader csvReader;
-    private Map<Integer, ArrayList> yields;
+    private Map<Integer, ArrayList<Object>> yields;
     private int sourceUnits;
-    private Converter converter;
 
     /**
      * Construct for CSV importer. Used by all subclasses.
@@ -27,16 +26,9 @@ public abstract class CSVImporter implements Importer {
      * @throws FileNotFoundException if filename is not found.
      */
     public CSVImporter(String filename,  int su) throws FileNotFoundException {
-//        try {
         csvReader = new CSVReader(new FileReader(filename));
-//        }
-//        catch (FileNotFoundException e) {
-//            System.err.println("Error: File " + filename + " does not exist.");
-//            System.exit(1);
-//        }
-        yields = new HashMap<Integer, ArrayList>();
+        yields = new HashMap<Integer, ArrayList<Object>>();
         sourceUnits = su;
-        converter = new Converter();
     }
 
     /**
@@ -59,8 +51,9 @@ public abstract class CSVImporter implements Importer {
      * Converts a year string to an integer.
      * @param token the string to be converted to an int.
      * @return The year, as an integer
+     * @throws NumberFormatException if the year cannot be parsed properly.
      */
-    public int parseYear(String token) {
+    public int parseYear(String token) throws NumberFormatException {
         return Integer.parseInt(token);
     }
 
@@ -89,13 +82,6 @@ public abstract class CSVImporter implements Importer {
         return tokens;
     }
 
-//    /**
-//     * Getter for target units.
-//     * @return the target units instance variable.
-//     */
-//    public int getTargetUnits() {
-//        return targetUnits;
-//    }
 
     /**
      * Getter for source units.
@@ -106,25 +92,29 @@ public abstract class CSVImporter implements Importer {
     }
 
     /**
-     * Sets a new yield for a specific crop in a given year.
-     * @param year the year to add the yield to
-     * @param toPut Crop object containing yield info.
+     * Getter for CSV reader.
+     * @return the CSV reader.
      */
-    public void setYield(int year, Object toPut) {
-        if (!yields.containsKey(year)) {
-            yields.put(year, new ArrayList<>() {{ add(toPut); }});
-        } else {
-            yields.get(year).add(toPut);
-        }
+    public CSVReader getCsvReader() {
+        return csvReader;
     }
 
     /**
-     * Getter for yields.
-     * @return the yields map.
+     * Setter for CSV reader.
+     * @param csvReader the new CSV reader.
      */
-    public Map<Integer, ArrayList> getYields() {
-        return yields;
+    public void setCsvReader(CSVReader csvReader) {
+        this.csvReader = csvReader;
     }
+
+    /**
+     * Setter for sourceUnits.
+     * @param sourceUnits the new sourceunits.
+     */
+    public void setSourceUnits(int sourceUnits) {
+        this.sourceUnits = sourceUnits;
+    }
+
 
     /**
      * To string method.

@@ -37,6 +37,42 @@ public class Converter {
     );
 
     /**
+     * Converts a yield from the source units to the desired target units.
+     * @param yield The yield to convert
+     * @param cropType the crop type
+     * @param sourceUnits the units the source data is in
+     * @param targetUnits the targetted units to convert to
+     * @return the yield in the desired units
+     * @throws BushelsConversionKeyNotFoundException thrown if the crop type is not present in the bushels conversion map.
+     */
+    public double convertYield(Double yield, String cropType, int sourceUnits, int targetUnits)
+            throws BushelsConversionKeyNotFoundException {
+        //convert yield according to what source and target units are
+        if (targetUnits != sourceUnits) {
+            switch (sourceUnits) {
+                case Crop.KG_PER_HA:
+                    if (targetUnits == Crop.LBS_PER_AC) {
+                        return kgPerHaToLbsPerAc(yield);
+                    }
+                    break;
+                case Crop.LBS_PER_AC:
+                    if (targetUnits == Crop.KG_PER_HA) {
+                        return lbsPerAcToKgPerHa(yield);
+                    }
+                    break;
+                case Crop.BU_PER_AC:
+                    if (targetUnits == Crop.LBS_PER_AC) {
+                        return buPerAcToLbsPerAc(yield, cropType);
+                    } else if (targetUnits == Crop.KG_PER_HA) {
+                        return buPerAcToKgPerHa(yield, cropType);
+                    }
+                    break;
+            }
+        }
+        return yield;
+    }
+
+    /**
      * Converts acres (imperial) to hectares (metric).
      * @param acres The area to convert
      * @return The area provided, in hectares
@@ -98,8 +134,9 @@ public class Converter {
      * @throws BushelsConversionKeyNotFoundException if the crop type is not in the map of conversion factors.
      */
     public double buPerAcToLbsPerAc(double buPerAc, String cropType) throws BushelsConversionKeyNotFoundException {
-        if (BU_TO_LBS.containsKey(cropType)) {
-            return buPerAc * BU_TO_LBS.get(cropType);
+        String conversionKey = bushelKeyConverter(cropType);
+        if (BU_TO_LBS.containsKey(conversionKey)) {
+            return buPerAc * BU_TO_LBS.get(conversionKey);
         } else {
             throw new BushelsConversionKeyNotFoundException("Key " + cropType + " not found in bushels conversion map.");
         }
