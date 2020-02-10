@@ -47,3 +47,26 @@ I would suggest running via `gradle run -q --console=plain` to reduce the overla
     - Given that I have input an incorrect path to the CSV file to be imported when prompted, then I am informed of my mistake.
             - See the CSVImporter constructor, which throws an exception. This is then passed all the way up to the importStatsCanCSV() method.
     - Given that I do not know what units the Statistics Canada yields are in, when I choose that I do not know  them, the import is cancelled.
+
+## Analysis Of Implementation
+### Single Responsibility Principle
+- I attempted to adhere to the single responsibility principle by ensuring that each method had one single task it was meant to perform. There are some cases, such as in the YieldComparisonToolDriver,
+where some side effects, such as IO, are in place; however, I decided to keep these in place so as to not go so in depth as to make a wrapper class on printing to stdout itself.
+- By breaking down the implementation of the Importer into an interface, abstract class, and sub-classes (that were concrete classes) I was able to extract a lot of "business logic" into subclasses
+to avoid breaking this principle.
+- The converter class is a good example of Single Responsibility. Each method has one specific task, which may or may not rely on other methods in order to perform said task.
+- 
+
+### Open-Close Principle
+- This principle was quite challenging to adhere to considering the data I was dealing with. I attempted to keep producer data encapsulated in the current state of the application to
+enforce the fact that producers should not be capable of seeing or using other producers' data.
+- Keeping the above in mind, I provided getters and setters for the vast majority of instance variables defined in my classes to make them as extendable as possible.
+- The only instance and class variables I made the choice to not provide these methods for were specific, private static constants such as those found in the Converter class, public static constants found in
+ the Crop class and PromptHelper class (as they can be accessed directly), and the Producer yield maps found inn the YieldComparator and YieldComparisonToolDriver.
+ - I attempted to abstract my class definitions as much as possible by defining interfaces that were then used by classes. This reinforced extendability while maintaining specific implementation
+ details at the lowest level possible.
+ 
+ ## Please Read! - Git merging habits
+ - In a haste to merge one of my branches I ended up squashing all commits and deleting my source branch.
+ - You can see this merge request on Gitlab by going to Merge Requests -> Merged -> StatsCanImporter
+ - I opted to NOT squash all commits and leave source branches for transparency after this point.
