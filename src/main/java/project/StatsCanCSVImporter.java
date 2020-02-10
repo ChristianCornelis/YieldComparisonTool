@@ -52,7 +52,6 @@ public class StatsCanCSVImporter extends CSVImporter {
                     System.out.println(e.getMessage());
                 }
                 Crop toPut = new Crop(cropName, yield, super.getSourceUnits());
-                System.out.println("Adding crop " + cropName);
                 int year = 0;
                 try {
                     year = parseYear(yearString);
