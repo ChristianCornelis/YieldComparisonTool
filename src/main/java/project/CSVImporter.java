@@ -16,7 +16,7 @@ import project.Exceptions.YieldInvalidException;
  */
 public abstract class CSVImporter implements Importer {
     private CSVReader csvReader;
-    private Map<Integer, ArrayList> yields;
+    private Map<Integer, ArrayList<Object>> yields;
     private int sourceUnits;
     private Converter converter;
 
@@ -34,7 +34,7 @@ public abstract class CSVImporter implements Importer {
 //            System.err.println("Error: File " + filename + " does not exist.");
 //            System.exit(1);
 //        }
-        yields = new HashMap<Integer, ArrayList>();
+        yields = new HashMap<Integer, ArrayList<Object>>();
         sourceUnits = su;
         converter = new Converter();
     }
@@ -59,8 +59,9 @@ public abstract class CSVImporter implements Importer {
      * Converts a year string to an integer.
      * @param token the string to be converted to an int.
      * @return The year, as an integer
+     * @throws NumberFormatException if the year cannot be parsed properly.
      */
-    public int parseYear(String token) {
+    public int parseYear(String token) throws NumberFormatException {
         return Integer.parseInt(token);
     }
 
@@ -103,27 +104,6 @@ public abstract class CSVImporter implements Importer {
      */
     public int getSourceUnits() {
         return sourceUnits;
-    }
-
-    /**
-     * Sets a new yield for a specific crop in a given year.
-     * @param year the year to add the yield to
-     * @param toPut Crop object containing yield info.
-     */
-    public void setYield(int year, Object toPut) {
-        if (!yields.containsKey(year)) {
-            yields.put(year, new ArrayList<>() {{ add(toPut); }});
-        } else {
-            yields.get(year).add(toPut);
-        }
-    }
-
-    /**
-     * Getter for yields.
-     * @return the yields map.
-     */
-    public Map<Integer, ArrayList> getYields() {
-        return yields;
     }
 
     /**
