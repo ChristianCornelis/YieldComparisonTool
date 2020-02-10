@@ -35,6 +35,8 @@ I would suggest running via `gradle run -q --console=plain` to reduce the overla
         - See the CSVImporter constructor, which throws an exception. This is then passed all the way up to the importProducerCSV() method.
     - Given that I do not know what units the Statistics Canada yields are in, when I choose to cancel the import, then no data is imported.
 - As a producer, I want to see the margins that my crop production was higher or lower than the national average
+    - Given that there is no data imported into the system, when I try to perform a a yield comparison, then it is not possible.
+    - Given that there is only data from one party importer into the system, when I try to perform a yield comparison, then an error message is output indicating this. 
     - Given that both StatsCan and producer yields are loaded, then I am able to select a unit to compare yields of certain crops in.
         - See the YieldComparisonToolDriver, which performs this functionality.
     - Given that I decided on a specific year to compare yields in, when I enter the year, then I am able to choose what crops to compare.
