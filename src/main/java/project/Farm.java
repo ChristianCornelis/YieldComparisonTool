@@ -20,6 +20,14 @@ public class Farm {
     }
 
     /**
+     * Returns the crop instance variable.
+     * @return Crop
+     */
+    public Crop getCrop() {
+        return crop;
+    }
+
+    /**
      * Retrieves the farm name.
      * @return the farm name, string
      */
@@ -51,13 +59,6 @@ public class Farm {
         this.name = name;
     }
 
-    /**
-     * Returns the crop instance variable.
-     * @return Crop
-     */
-    public Crop getCrop() {
-        return crop;
-    }
 
     /**
      * Returns a string containing all attributes of the farm class.

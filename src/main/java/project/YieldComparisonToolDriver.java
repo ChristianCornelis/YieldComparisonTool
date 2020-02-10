@@ -70,12 +70,18 @@ public class YieldComparisonToolDriver {
                 inputHandler.unitsPrompt("Choose the units you wish to see yield differences in:\n"),
                 validComparisonActions
         );
+        if (comparisonUnits == CANCEL_TASK) {
+            return;
+        }
         YieldComparator yc = new YieldComparator(
                 producerYieldsUnits, statsCanYieldsUnits, comparisonUnits, producerYields,  statsCanYields
         );
+        ArrayList<Integer> yearsIntersection = yc.keyIntersection(
+                producerYields.keySet(),
+                statsCanYields.keySet()
+        );
         int year = inputHandler.chooseAction(
-                inputHandler.yearsPrompt(), yc.keyIntersection(producerYields.keySet(),
-                        statsCanYields.keySet()));
+                inputHandler.yearsPrompt(), yearsIntersection, inputHandler.invalidYearPrompt(yearsIntersection));
         System.out.println(inputHandler.cropPrompt());
         String crop = inputHandler.getBasicInput();
         double diff = 0;
@@ -137,6 +143,49 @@ public class YieldComparisonToolDriver {
             System.out.println(inputHandler.mapStatus("StatsCan yields", false));
         }
     }
+
+    /**
+     * Retrieve the StatsCan yields already loaded.
+     * @return the StatsCan yields.
+     */
+    public Map<Integer, ArrayList<Crop>> getStatsCanYields() {
+        return statsCanYields;
+    }
+
+    //No getter for producer units - meant to stay encapsulated.
+
+    /**
+     * Get the input handler.
+     * @return the input handler.
+     */
+    public InputHandler getInputHandler() {
+        return inputHandler;
+    }
+
+    /**
+     * Get the untis that the producer yields are in.
+     * @return the units.
+     */
+    public int getProducerYieldsUnits() {
+        return producerYieldsUnits;
+    }
+
+    /**
+     * Get the units the StatsCan yields are in.
+     * @return the units.
+     */
+    public int getStatsCanYieldsUnits() {
+        return statsCanYieldsUnits;
+    }
+
+    /**
+     * Update the input handler.
+     * @param inputHandler the new input handler.
+     */
+    public void setInputHandler(InputHandler inputHandler) {
+        this.inputHandler = inputHandler;
+    }
+
     /**
      * Setter for producerYields map.
      * @param producerYields the yields to set to.

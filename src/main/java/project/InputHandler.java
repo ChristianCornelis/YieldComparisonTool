@@ -42,42 +42,13 @@ public class InputHandler extends PromptHelper {
     }
 
     /**
-     * Checks if an action is valid.
-     * @param validActions array of valid actions
-     * @param action action to check
-     * @return true or false
-     */
-    private Boolean actionIsValid(int[] validActions, int action) {
-        for (int v : validActions) {
-            if (v == action) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Converts an action to an integer. Handles format exceptions.
-     * @param action the action to convert
-     * @return the action as an integer.
-     */
-    private int convertInputAction(String action) {
-        int inputAction = -1;
-        try {
-            inputAction = Integer.parseInt(action);
-        } catch (NumberFormatException e) {
-            inputAction = -1;
-        }
-        return inputAction;
-    }
-
-    /**
      * Chooses an action from a prompt string.
      * @param promptString The string to prompt.
      * @param validInputs Valid input chouces.
+     * @param errorPrompt the additional prompt to provide when an invalid input is given.
      * @return the chosen valid choice.
      */
-    public int chooseAction(String promptString, ArrayList validInputs) {
+    public int chooseAction(String promptString, ArrayList validInputs, String errorPrompt) {
         String input = "";
         int inputInt = -1;
         System.out.println(promptString);
@@ -85,6 +56,7 @@ public class InputHandler extends PromptHelper {
             input = inputScanner.next();
             inputInt = convertInputAction(input);
             if (!validInputs.contains(inputInt)) {
+                System.out.println(errorPrompt);
                 System.out.println(promptString);
             }
         }
@@ -118,6 +90,52 @@ public class InputHandler extends PromptHelper {
      */
     public String getBasicInput() {
         return inputScanner.next();
+    }
+
+    /**
+     * Checks if an action is valid.
+     * @param validActions array of valid actions
+     * @param action action to check
+     * @return true or false
+     */
+    private Boolean actionIsValid(int[] validActions, int action) {
+        for (int v : validActions) {
+            if (v == action) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Converts an action to an integer. Handles format exceptions.
+     * @param action the action to convert
+     * @return the action as an integer.
+     */
+    private int convertInputAction(String action) {
+        int inputAction = -1;
+        try {
+            inputAction = Integer.parseInt(action);
+        } catch (NumberFormatException e) {
+            inputAction = -1;
+        }
+        return inputAction;
+    }
+
+    /**
+     * Getter for scanner.
+     * @return the scanner.
+     */
+    public Scanner getInputScanner() {
+        return inputScanner;
+    }
+
+    /**
+     * Setter for scanner.
+     * @param inputScanner the new input scanner.
+     */
+    public void setInputScanner(Scanner inputScanner) {
+        this.inputScanner = inputScanner;
     }
 }
 

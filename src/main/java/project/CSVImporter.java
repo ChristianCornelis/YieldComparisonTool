@@ -18,7 +18,6 @@ public abstract class CSVImporter implements Importer {
     private CSVReader csvReader;
     private Map<Integer, ArrayList<Object>> yields;
     private int sourceUnits;
-    private Converter converter;
 
     /**
      * Construct for CSV importer. Used by all subclasses.
@@ -27,16 +26,9 @@ public abstract class CSVImporter implements Importer {
      * @throws FileNotFoundException if filename is not found.
      */
     public CSVImporter(String filename,  int su) throws FileNotFoundException {
-//        try {
         csvReader = new CSVReader(new FileReader(filename));
-//        }
-//        catch (FileNotFoundException e) {
-//            System.err.println("Error: File " + filename + " does not exist.");
-//            System.exit(1);
-//        }
         yields = new HashMap<Integer, ArrayList<Object>>();
         sourceUnits = su;
-        converter = new Converter();
     }
 
     /**
@@ -90,13 +82,6 @@ public abstract class CSVImporter implements Importer {
         return tokens;
     }
 
-//    /**
-//     * Getter for target units.
-//     * @return the target units instance variable.
-//     */
-//    public int getTargetUnits() {
-//        return targetUnits;
-//    }
 
     /**
      * Getter for source units.
@@ -105,6 +90,31 @@ public abstract class CSVImporter implements Importer {
     public int getSourceUnits() {
         return sourceUnits;
     }
+
+    /**
+     * Getter for CSV reader.
+     * @return the CSV reader.
+     */
+    public CSVReader getCsvReader() {
+        return csvReader;
+    }
+
+    /**
+     * Setter for CSV reader.
+     * @param csvReader the new CSV reader.
+     */
+    public void setCsvReader(CSVReader csvReader) {
+        this.csvReader = csvReader;
+    }
+
+    /**
+     * Setter for sourceUnits.
+     * @param sourceUnits the new sourceunits.
+     */
+    public void setSourceUnits(int sourceUnits) {
+        this.sourceUnits = sourceUnits;
+    }
+
 
     /**
      * To string method.

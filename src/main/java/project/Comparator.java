@@ -3,6 +3,9 @@ package project;
 import java.util.ArrayList;
 import java.util.Set;
 
+/**
+ * Interface for comparing data. Could be yield, area, or production
+ */
 public interface Comparator {
     /**
      * Calculates the difference between the first value and the second value.

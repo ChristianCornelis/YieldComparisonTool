@@ -6,7 +6,7 @@ public class Crop {
      public static final int BU_PER_AC = 2;
 
     private int units;
-    private String type; //could be int?
+    private String type;
     private double yield;
 
     /**

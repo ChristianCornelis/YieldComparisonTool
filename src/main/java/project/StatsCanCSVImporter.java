@@ -88,6 +88,18 @@ public class StatsCanCSVImporter extends CSVImporter {
     }
 
     /**
+     * ToString method. Calls on the superclass toString.
+     * @return string representation of the class.
+     */
+    @Override
+    public String toString() {
+        return super.toString() +
+                "\nStatsCanCSVImporter{" +
+                "yields=" + yields +
+                '}';
+    }
+
+    /**
      * Driver program.
      * @param args args for prog
      */

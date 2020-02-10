@@ -1,5 +1,10 @@
 package project;
 
+import java.util.ArrayList;
+
+/**
+ * Helper class for building prompt status strings.
+ */
 public abstract class PromptHelper {
 
     public static final int IMPORT_PRODUCER_CSV = 0;
@@ -29,6 +34,21 @@ public abstract class PromptHelper {
      */
     public String yearsPrompt() {
         return "Enter a year to compare yields from:\n";
+    }
+
+    /**
+     * Builds a string with all valid years.
+     * @param years the arraylist of valid years.
+     * @return a string of all valid years.
+     */
+    public String invalidYearPrompt(ArrayList<Integer> years) {
+        StringBuilder stringBuilder = new StringBuilder(
+                "That year does not contain data for the given crop in both sets of data.\n" +
+                "Choose a different year from the following please:\n");
+        for (Integer year : years) {
+            stringBuilder.append(year + "\n");
+        }
+        return stringBuilder.toString();
     }
 
     /**

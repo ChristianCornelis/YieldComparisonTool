@@ -9,6 +9,7 @@ import project.Exceptions.BushelsConversionKeyNotFoundException;
 
 /**
  * Comparator class for yields.
+ * Contains logic for both Producer and StatsCan data so as to avoid the need to instantiate two comparators.
  */
 public class YieldComparator implements Comparator {
     private Converter converter;
@@ -164,4 +165,79 @@ public class YieldComparator implements Comparator {
                 "The Producer yield map does not contain the crop " + crop + "!"
         );
     }
+
+    /**
+     * Get the converter object in use.
+     * @return the converter.
+     */
+    public Converter getConverter() {
+        return converter;
+    }
+
+    /**
+     * Get the units the producer yields are in.
+     * @return the producer yields unit.
+     */
+    public int getProducerUnits() {
+        return producerUnits;
+    }
+
+    /**
+     * Get the units the StatsCan yields are in.
+     * @return the statscan yield units.
+     */
+    public int getStatsCanUnits() {
+        return statsCanUnits;
+    }
+
+    /**
+     * get the targetted units for comparison.
+     * @return the taget units.
+     */
+    public int getTargetUnits() {
+        return targetUnits;
+    }
+
+    /**
+     * Get the statsCan units being used.
+     * @return the units.
+     */
+    public Map<Integer, ArrayList<Crop>> getStatsCanYields() {
+        return statsCanYields;
+    }
+
+    // No getter for Producer Units - meant to stay private to users.
+
+
+    /**
+     * Set the target units.
+     * @param targetUnits the target units
+     */
+    public void setTargetUnits(int targetUnits) {
+        this.targetUnits = targetUnits;
+    }
+
+    /**
+     * Update the StatsCan yields in use.
+     * @param statsCanYields the new StatsCan yields.
+     */
+    public void setStatsCanYields(Map<Integer, ArrayList<Crop>> statsCanYields) {
+        this.statsCanYields = statsCanYields;
+    }
+
+    /**
+     * Update the StatsCan units in use.
+     * @param statsCanUnits the new statsCanUnits
+     */
+    public void setStatsCanUnits(int statsCanUnits) {
+        this.statsCanUnits = statsCanUnits;
+    }
+    /**
+     * Update the converter in use.
+     * @param converter the new converter.
+     */
+    public void setConverter(Converter converter) {
+        this.converter = converter;
+    }
+
 }
