@@ -45,7 +45,7 @@ public class YieldComparator implements Comparator {
      * @param value2 Second value to compare.
      * @return the difference.
      */
-    public double difference(double value1, double value2) {
+    public double getDifference(double value1, double value2) {
         return value1 - value2;
     }
 
@@ -79,7 +79,7 @@ public class YieldComparator implements Comparator {
 
         double statsCanYield = retrieveStatsCanCropYield(crop, statsCanYields.get(year));
 
-        return difference(producerYield, statsCanYield);
+        return getDifference(producerYield, statsCanYield);
 
     }
 

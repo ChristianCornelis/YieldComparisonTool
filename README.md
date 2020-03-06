@@ -71,7 +71,7 @@ enforce the fact that producers should not be capable of seeing or using other p
  - I attempted to abstract my class definitions as much as possible by defining interfaces that were then used by classes. This reinforced extendability while maintaining specific implementation
  details at the lowest level possible.
  
- ## Please Read! - Git merging habits
- - In a haste to merge one of my branches I ended up squashing all commits and deleting my source branch.
- - You can see this merge request on Gitlab by going to Merge Requests -> Merged -> StatsCanImporter
- - I opted to NOT squash all commits and leave source branches for transparency after this point.
+ ## Glossary for Industry-Specific Terms and Constants
+ - **HA**: Hectare(s), the metric measurement for an area, used to measure the size of fields.
+ - **AC**: Acre(s), the imperial measurement for an area, used to measure the size of fields.
+ - 
