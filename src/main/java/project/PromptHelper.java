@@ -24,7 +24,7 @@ public abstract class PromptHelper {
      * @param isPopulated whether the map is populated
      * @return the formatted string.
      */
-    public String mapStatus(String mapName, Boolean isPopulated) {
+    public String outputMapStatus(String mapName, Boolean isPopulated) {
         return "The " + mapName + " yield map " + (isPopulated ? ("is populated.") : ("is not populated."));
     }
 
@@ -32,7 +32,7 @@ public abstract class PromptHelper {
      * Helper to build a prompt for choosing a year.
      * @return the string.
      */
-    public String yearsPrompt() {
+    public String getYearsPrompt() {
         return "Enter a year to compare yields from:\n";
     }
 
@@ -41,7 +41,7 @@ public abstract class PromptHelper {
      * @param years the arraylist of valid years.
      * @return a string of all valid years.
      */
-    public String invalidYearPrompt(ArrayList<Integer> years) {
+    public String outputInvalidYearPrompt(ArrayList<Integer> years) {
         StringBuilder stringBuilder = new StringBuilder(
                 "That year does not contain data for the given crop in both sets of data.\n" +
                 "Choose a different year from the following please:\n");
@@ -56,7 +56,7 @@ public abstract class PromptHelper {
      * @param customPrompt a string to be prepended to the prompt. For re-using this method.
      * @return the pre-built prompt to be output.
      */
-    public String unitsPrompt(String customPrompt) {
+    public String getUnitsPrompt(String customPrompt) {
         return  customPrompt +
                 "(" + Crop.KG_PER_HA + ") - Kilograms per hectare (kg/ha)" +
                 "\n(" + Crop.LBS_PER_AC + ") - Pounds per acre (lbs/ac)" +
@@ -68,7 +68,7 @@ public abstract class PromptHelper {
      * Helper to represent prompt for entering a crop type to compare against.
      * @return the prompt
      */
-    public String cropPrompt() {
+    public String getCropPrompt() {
         return "Enter the crop type you wish to compare yields for:\n";
     }
 
@@ -76,7 +76,7 @@ public abstract class PromptHelper {
      * Gets the prompt for a file location to import.
      * @return the prompt
      */
-    public String fileLocationPrompt() {
+    public String getFileLocationPrompt() {
         return "Enter the path to the CSV you would like to import.\n" +
                 "Paths should be relative to " + System.getProperty("user.dir") + "\n";
     }
@@ -85,7 +85,7 @@ public abstract class PromptHelper {
      * Prompt for an action to perform.
      * @return the string to output.
      */
-    public String actionPrompt() {
+    public String getActionPrompt() {
         return "What would you like to do?\n" +
                 "\n(" + IMPORT_PRODUCER_CSV + ") - Import a producer yield CSV." +
                 "\n(" + IMPORT_STATSCAN_CSV + ") - Import a Statistics Canada average yield CSV." +
