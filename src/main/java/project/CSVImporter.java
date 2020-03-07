@@ -22,13 +22,13 @@ public abstract class CSVImporter implements Importer {
     /**
      * Construct for CSV importer. Used by all subclasses.
      * @param filename the file to parse
-     * @param su the source units yields are present in.
+     * @param sourceUnits the source units yields are present in.
      * @throws FileNotFoundException if filename is not found.
      */
-    public CSVImporter(String filename,  int su) throws FileNotFoundException {
+    public CSVImporter(String filename,  int sourceUnits) throws FileNotFoundException {
         csvReader = new CSVReader(new FileReader(filename));
         yields = new HashMap<Integer, ArrayList<Object>>();
-        sourceUnits = su;
+        this.sourceUnits = sourceUnits;
     }
 
     /**
