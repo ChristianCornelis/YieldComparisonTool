@@ -30,10 +30,10 @@ public class Driver {
     public void importFile(int action) {
         int[] validImportActions = {IMPORT_KG_PER_HA, IMPORT_LB_PER_AC, IMPORT_BU_PER_AC, CANCEL_TASK};
         int importUnits = inputHandler.chooseAction(
-                inputHandler.unitsPrompt("Choose the units the yields are in:\n"),
+                inputHandler.getUnitsPrompt("Choose the units the yields are in:\n"),
                 validImportActions);
         if (importUnits != CANCEL_TASK) {
-            System.out.println(inputHandler.fileLocationPrompt());
+            System.out.println(inputHandler.getFileLocationPrompt());
             String fileLocation = inputHandler.getBasicInput();
 
             int sourceUnits = -1;
@@ -64,7 +64,7 @@ public class Driver {
         //Todo: Implement comparison in Bu/ac
         int[] validComparisonActions = {IMPORT_KG_PER_HA, IMPORT_LB_PER_AC, /*IMPORT_BU_PER_AC,*/ CANCEL_TASK};
         return inputHandler.chooseAction(
-                inputHandler.unitsPrompt("Choose the units you wish to see yield differences in:\n"),
+                inputHandler.getUnitsPrompt("Choose the units you wish to see yield differences in:\n"),
                 validComparisonActions
         );
     }
@@ -76,9 +76,9 @@ public class Driver {
      */
     private int getYear(ArrayList<Integer> yearsIntersection) {
         return  inputHandler.chooseAction(
-                inputHandler.yearsPrompt(),
+                inputHandler.getYearsPrompt(),
                 yearsIntersection,
-                inputHandler.invalidYearPrompt(yearsIntersection));
+                inputHandler.getInvalidYearPrompt(yearsIntersection));
     }
 
     /**
@@ -86,7 +86,7 @@ public class Driver {
      * @return the crop name that is to be compared.
      */
     private String getCrop() {
-        System.out.println(inputHandler.cropPrompt());
+        System.out.println(inputHandler.getCropPrompt());
         return inputHandler.getBasicInput();
     }
     /**
@@ -134,7 +134,7 @@ public class Driver {
         while (action != QUIT) {
             System.out.println(inputHandler.getYieldsStatus(producerYields, statsCanYields));
             int[] validActions = {IMPORT_PRODUCER_CSV, IMPORT_STATSCAN_CSV, COMPARE_PRODUCER_STATSCAN_YIELDS, QUIT};
-            action = inputHandler.chooseAction(inputHandler.actionPrompt(), validActions);
+            action = inputHandler.chooseAction(inputHandler.getActionPrompt(), validActions);
             if (action == IMPORT_PRODUCER_CSV || action == IMPORT_STATSCAN_CSV) {
                 importFile(action);
             } else if (action == COMPARE_PRODUCER_STATSCAN_YIELDS) {
@@ -156,10 +156,10 @@ public class Driver {
             ProducerCSVImporter pci = new ProducerCSVImporter(fileLocation, sourceUnits);
             pci.parse();
             setProducerYields(pci.getYields());
-            System.out.println(inputHandler.mapStatus("Producer yields", true));
+            System.out.println(inputHandler.outputMapStatus("Producer yields", true));
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
-            System.out.println(inputHandler.mapStatus("Producer yields", false));
+            System.out.println(inputHandler.outputMapStatus("Producer yields", false));
         }
     }
 
@@ -174,10 +174,10 @@ public class Driver {
             StatsCanCSVImporter sci = new StatsCanCSVImporter(fileLocation, sourceUnits);
             sci.parse();
             setStatsCanYields(sci.getYields());
-            System.out.println(inputHandler.mapStatus("StatsCan yields", true));
+            System.out.println(inputHandler.outputMapStatus("StatsCan yields", true));
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
-            System.out.println(inputHandler.mapStatus("StatsCan yields", false));
+            System.out.println(inputHandler.outputMapStatus("StatsCan yields", false));
         }
     }
 
