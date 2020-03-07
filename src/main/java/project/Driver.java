@@ -9,7 +9,7 @@ import static project.PromptHelper.*;
 /**
  * Temporary driver class for the entire project.
  */
-public class YieldComparisonToolDriver {
+public class Driver {
     private InputHandler inputHandler;
     private Map<Integer, ArrayList<Farm>> producerYields;
     private Map<Integer, ArrayList<Crop>> statsCanYields;
@@ -19,7 +19,7 @@ public class YieldComparisonToolDriver {
     /**
      * Constructor.
      */
-    public YieldComparisonToolDriver() {
+    public Driver() {
         inputHandler = new InputHandler();
     }
 
@@ -57,6 +57,39 @@ public class YieldComparisonToolDriver {
     }
 
     /**
+     * Helper to get the units to be used for comparing crops.
+     * @return the constant representing the unit
+     */
+    private int getComparisonUnits() {
+        //Todo: Implement comparison in Bu/ac
+        int[] validComparisonActions = {IMPORT_KG_PER_HA, IMPORT_LB_PER_AC, /*IMPORT_BU_PER_AC,*/ CANCEL_TASK};
+        return inputHandler.chooseAction(
+                inputHandler.unitsPrompt("Choose the units you wish to see yield differences in:\n"),
+                validComparisonActions
+        );
+    }
+
+    /**
+     * Helper to get the year for comparison.
+     * @param yearsIntersection the intersection of all years available for comparing producer and statscan datasets
+     * @return the year chosen by the user
+     */
+    private int getYear(ArrayList<Integer> yearsIntersection) {
+        return  inputHandler.chooseAction(
+                inputHandler.yearsPrompt(),
+                yearsIntersection,
+                inputHandler.invalidYearPrompt(yearsIntersection));
+    }
+
+    /**
+     * Helper to get the crop for comparison.
+     * @return the crop name that is to be compared.
+     */
+    private String getCrop() {
+        System.out.println(inputHandler.cropPrompt());
+        return inputHandler.getBasicInput();
+    }
+    /**
      * Method to compare yields.
      */
     public void compareYields() {
@@ -65,11 +98,7 @@ public class YieldComparisonToolDriver {
             return;
         }
         //Todo: Implement comparison in Bu/ac
-        int[] validComparisonActions = {IMPORT_KG_PER_HA, IMPORT_LB_PER_AC, /*IMPORT_BU_PER_AC,*/ CANCEL_TASK};
-        int comparisonUnits = inputHandler.chooseAction(
-                inputHandler.unitsPrompt("Choose the units you wish to see yield differences in:\n"),
-                validComparisonActions
-        );
+        int comparisonUnits = getComparisonUnits();
         if (comparisonUnits == CANCEL_TASK) {
             return;
         }
@@ -80,10 +109,8 @@ public class YieldComparisonToolDriver {
                 producerYields.keySet(),
                 statsCanYields.keySet()
         );
-        int year = inputHandler.chooseAction(
-                inputHandler.yearsPrompt(), yearsIntersection, inputHandler.invalidYearPrompt(yearsIntersection));
-        System.out.println(inputHandler.cropPrompt());
-        String crop = inputHandler.getBasicInput();
+        int year = getYear(yearsIntersection);
+        String crop = getCrop();
         double diff = 0;
         try {
             diff = yc.compareCropsByYear(crop, year);
@@ -118,6 +145,11 @@ public class YieldComparisonToolDriver {
         return;
     }
 
+    /**
+     * Helper to call on Producer data importer.
+     * @param sourceUnits the units the source data is in
+     * @param fileLocation the location of the CSV to be imported
+     */
     private void importProducerCSV(int sourceUnits, String fileLocation) {
         setProducerYieldsUnits(sourceUnits);
         try {
@@ -131,6 +163,11 @@ public class YieldComparisonToolDriver {
         }
     }
 
+    /**
+     * Helper to call on StatsCan data importer.
+     * @param sourceUnits the units the source data is in
+     * @param fileLocation the location of the CSV to be imported
+     */
     private void importStatsCanCSV(int sourceUnits, String fileLocation) {
         setStatsCanYieldsUnits(sourceUnits);
         try {
@@ -223,7 +260,7 @@ public class YieldComparisonToolDriver {
      * @param args system args.
      */
     public static void main(String[] args) {
-        YieldComparisonToolDriver driver = new YieldComparisonToolDriver();
+        Driver driver = new Driver();
         driver.run();
     }
 }
