@@ -71,7 +71,21 @@ enforce the fact that producers should not be capable of seeing or using other p
  - I attempted to abstract my class definitions as much as possible by defining interfaces that were then used by classes. This reinforced extendability while maintaining specific implementation
  details at the lowest level possible.
  
- ## Please Read! - Git merging habits
- - In a haste to merge one of my branches I ended up squashing all commits and deleting my source branch.
- - You can see this merge request on Gitlab by going to Merge Requests -> Merged -> StatsCanImporter
- - I opted to NOT squash all commits and leave source branches for transparency after this point.
+## Glossary of Terms and Constants
+- Yields, weights, and areas must be converted in order for comparisons to be done in either metric or imperial units.
+  This section aims to explain some of these units and conversions. Constants can be found in src/main/java/project/Converter.java
+
+| Term | Explanation |
+| ---- | --------- |
+| Bushel | An imperial measurement equivalent to 64 US pints (or 32.5 liters) commonly used to measure the yield of crops. This amount of goods in a bushel varies based on crop size and density. |
+| Acre | An imperial measurement of area equivalent to 66 x 660 feet, or 43 560 square feet. Equivalent to 4047 square meters, or about 0.4 hectares. |
+| Hectare | A metric unit of square measurement that is 10 000 square meters, or 100m x 100m. Equivalent to 2.471 acres. |
+
+| Constant | Explanation |
+| -------- | --------- |
+| KGS_PER_HA_TO_LBS_PER_AC_FACTOR | The factor used to convert yields between the metric units, kilograms per hectare, to the imperial units pounds per acre. |
+| LBS_PER_AC_TO_KG_PER_HA_FACTOR | The factor used to convert yields between the imperial units, pounds per acre, to the metric units, kilograms per acre.|
+| KGS_TO_LBS_FACTOR | The factor to convert weights from kilograms (metric) to pounds (imperial). |
+| LBS_TO_KGS_FACTOR | The factor to convert weights from pounds (imperial) to kilograms (metric). |
+| HA_TO_AC_FACTOR | The factor to convert areas measured in hectares (metric) to acres (imperial). |
+| AC_TO_HA_FACTOR | The factor to convert areas measured in acres (imperial) to hectares (metric). |
