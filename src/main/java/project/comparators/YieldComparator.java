@@ -1,11 +1,14 @@
-package project;
+package project.comparators;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
+import project.converters.Converter;
+import project.data.Crop;
 import project.Exceptions.InvalidComparatorParamsException;
 import project.Exceptions.BushelsConversionKeyNotFoundException;
+import project.data.Farm;
 
 /**
  * Comparator class for yields.
@@ -45,7 +48,7 @@ public class YieldComparator implements Comparator {
      * @param value2 Second value to compare.
      * @return the difference.
      */
-    public double difference(double value1, double value2) {
+    public double getDifference(double value1, double value2) {
         return value1 - value2;
     }
 
@@ -79,7 +82,7 @@ public class YieldComparator implements Comparator {
 
         double statsCanYield = retrieveStatsCanCropYield(crop, statsCanYields.get(year));
 
-        return difference(producerYield, statsCanYield);
+        return getDifference(producerYield, statsCanYield);
 
     }
 

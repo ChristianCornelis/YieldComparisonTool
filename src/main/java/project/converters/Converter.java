@@ -1,14 +1,16 @@
-package project;
+package project.converters;
 
 import java.util.Map;
 import project.Exceptions.BushelsConversionKeyNotFoundException;
+import project.data.Crop;
+
 import static java.util.Map.entry;
 
 public class Converter {
-    private static final double KG_PER_HA_TO_LBS_PER_AC_FACTOR = 0.892179;
+    private static final double KGS_PER_HA_TO_LBS_PER_AC_FACTOR = 0.892179;
     private static final double LBS_PER_AC_TO_KG_PER_HA_FACTOR = 1.12085;
-    private static final double KILOS_TO_LBS_FACTOR = 2.20462;
-    private static final double LBS_TO_KILOS_FACTOR = 0.453592;
+    private static final double KGS_TO_LBS_FACTOR = 2.20462;
+    private static final double LBS_TO_KGS_FACTOR = 0.453592;
     private static final double HA_TO_AC_FACTOR = 2.47105;
     private static final double AC_TO_HA_FACTOR = 0.404686;
     private static final Map<String, Integer> BU_TO_LBS = Map.ofEntries(
@@ -96,7 +98,7 @@ public class Converter {
      * @return the weight provided, in kilos
      */
     public double lbsToKilos(double pounds) {
-        return pounds * LBS_TO_KILOS_FACTOR;
+        return pounds * LBS_TO_KGS_FACTOR;
     }
 
     /**
@@ -105,7 +107,7 @@ public class Converter {
      * @return the weight provided, in pounds.
      */
     public double kilosToLbs(double kilos) {
-        return kilos * KILOS_TO_LBS_FACTOR;
+        return kilos * KGS_TO_LBS_FACTOR;
     }
 
     /**
@@ -114,7 +116,7 @@ public class Converter {
      * @return The yield in imperial units.
      */
     public double kgPerHaToLbsPerAc(double kgPerHa) {
-        return kgPerHa * KG_PER_HA_TO_LBS_PER_AC_FACTOR;
+        return kgPerHa * KGS_PER_HA_TO_LBS_PER_AC_FACTOR;
     }
 
     /**

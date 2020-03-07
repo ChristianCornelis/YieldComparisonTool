@@ -1,4 +1,7 @@
-package project;
+package project.importers;
+
+import project.Exceptions;
+import project.data.Farm;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -11,11 +14,11 @@ public class ProducerCSVImporter extends CSVImporter {
     /**
      * Constructor.
      * @param filename the file to parse.
-     * @param su the source units for yield.
+     * @param sourceUnits the source units for yield.
      * @throws FileNotFoundException if the filename cannot be found.
      */
-    public ProducerCSVImporter(String filename, int su) throws FileNotFoundException {
-        super(filename, su);
+    public ProducerCSVImporter(String filename, int sourceUnits) throws FileNotFoundException {
+        super(filename, sourceUnits);
         yields = new HashMap<>();
     }
 

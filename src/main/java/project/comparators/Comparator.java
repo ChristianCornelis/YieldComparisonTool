@@ -1,4 +1,4 @@
-package project;
+package project.comparators;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -13,7 +13,7 @@ public interface Comparator {
      * @param value2 Second value to compare.
      * @return the difference.
      */
-    double difference(double value1, double value2);
+    double getDifference(double value1, double value2);
 
     /**
      * Calculates the intersection of two maps' keysets.

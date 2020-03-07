@@ -22,7 +22,7 @@ checkstyle {
 apply plugin: 'java'
 
 task(run, dependsOn: 'classes', type: JavaExec) {
-    main = 'project.YieldComparisonToolDriver'
+    main = 'project.Driver'
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
 }

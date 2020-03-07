@@ -8,12 +8,12 @@ public class Exceptions {
     /**
      * Exception for when a crop type is not a key in the map containing conversion factors from bushels.
      */
-    protected static class BushelsConversionKeyNotFoundException extends Exception {
+    public static class BushelsConversionKeyNotFoundException extends Exception {
         /**
          * Constructor.
          * @param msg The message to contain in the exception.
          */
-        protected BushelsConversionKeyNotFoundException(String msg) {
+        public BushelsConversionKeyNotFoundException(String msg) {
             super(msg);
         }
     }
@@ -21,12 +21,12 @@ public class Exceptions {
     /**
      * Exception for when a yield value is invalid.
      */
-    protected static class YieldInvalidException extends Exception {
+    public static class YieldInvalidException extends Exception {
         /**
          * Constructor.
          * @param msg The message to contain in the exception.
          */
-        protected YieldInvalidException(String msg) {
+        public YieldInvalidException(String msg) {
             super(msg);
         }
     }
@@ -34,12 +34,12 @@ public class Exceptions {
     /**
      * Exception for when comparison params are invalid.
      */
-    protected static class InvalidComparatorParamsException extends Exception {
+    public static class InvalidComparatorParamsException extends Exception {
         /**
          * Constructor.
          * @param msg the message to contain in the exception.
          */
-        protected InvalidComparatorParamsException(String msg) {
+        public InvalidComparatorParamsException(String msg) {
             super(msg);
         }
     }

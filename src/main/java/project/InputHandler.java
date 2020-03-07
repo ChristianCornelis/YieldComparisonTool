@@ -28,14 +28,14 @@ public class InputHandler extends PromptHelper {
     public String getYieldsStatus(Map producerYields, Map statsCanYields) {
         String toReturn = "\nLoaded yields status:\n\t- ";
         if (producerYields != null) {
-            toReturn += mapStatus("Producer yields", true) + "\n\t- ";
+            toReturn += outputMapStatus("Producer yields", true) + "\n\t- ";
         } else {
-            toReturn += mapStatus("Producer yields", false) + "\n\t- ";
+            toReturn += outputMapStatus("Producer yields", false) + "\n\t- ";
         }
         if (statsCanYields != null) {
-            toReturn += mapStatus("Statistics Canada yields", true) + "\n";
+            toReturn += outputMapStatus("Statistics Canada yields", true) + "\n";
         } else {
-            toReturn += mapStatus("Statistics Canada yields", false) + "\n";
+            toReturn += outputMapStatus("Statistics Canada yields", false) + "\n";
         }
 
         return toReturn;

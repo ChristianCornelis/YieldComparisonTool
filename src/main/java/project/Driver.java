@@ -1,5 +1,11 @@
 package project;
 
+import project.comparators.YieldComparator;
+import project.data.Crop;
+import project.data.Farm;
+import project.importers.ProducerCSVImporter;
+import project.importers.StatsCanCSVImporter;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -9,7 +15,7 @@ import static project.PromptHelper.*;
 /**
  * Temporary driver class for the entire project.
  */
-public class YieldComparisonToolDriver {
+public class Driver {
     private InputHandler inputHandler;
     private Map<Integer, ArrayList<Farm>> producerYields;
     private Map<Integer, ArrayList<Crop>> statsCanYields;
@@ -19,7 +25,7 @@ public class YieldComparisonToolDriver {
     /**
      * Constructor.
      */
-    public YieldComparisonToolDriver() {
+    public Driver() {
         inputHandler = new InputHandler();
     }
 
@@ -30,10 +36,10 @@ public class YieldComparisonToolDriver {
     public void importFile(int action) {
         int[] validImportActions = {IMPORT_KG_PER_HA, IMPORT_LB_PER_AC, IMPORT_BU_PER_AC, CANCEL_TASK};
         int importUnits = inputHandler.chooseAction(
-                inputHandler.unitsPrompt("Choose the units the yields are in:\n"),
+                inputHandler.getUnitsPrompt("Choose the units the yields are in:\n"),
                 validImportActions);
         if (importUnits != CANCEL_TASK) {
-            System.out.println(inputHandler.fileLocationPrompt());
+            System.out.println(inputHandler.getFileLocationPrompt());
             String fileLocation = inputHandler.getBasicInput();
 
             int sourceUnits = -1;
@@ -57,6 +63,39 @@ public class YieldComparisonToolDriver {
     }
 
     /**
+     * Helper to get the units to be used for comparing crops.
+     * @return the constant representing the unit
+     */
+    private int getComparisonUnits() {
+        //Todo: Implement comparison in Bu/ac
+        int[] validComparisonActions = {IMPORT_KG_PER_HA, IMPORT_LB_PER_AC, /*IMPORT_BU_PER_AC,*/ CANCEL_TASK};
+        return inputHandler.chooseAction(
+                inputHandler.getUnitsPrompt("Choose the units you wish to see yield differences in:\n"),
+                validComparisonActions
+        );
+    }
+
+    /**
+     * Helper to get the year for comparison.
+     * @param yearsIntersection the intersection of all years available for comparing producer and statscan datasets
+     * @return the year chosen by the user
+     */
+    private int getYear(ArrayList<Integer> yearsIntersection) {
+        return  inputHandler.chooseAction(
+                inputHandler.getYearsPrompt(),
+                yearsIntersection,
+                inputHandler.getInvalidYearPrompt(yearsIntersection));
+    }
+
+    /**
+     * Helper to get the crop for comparison.
+     * @return the crop name that is to be compared.
+     */
+    private String getCrop() {
+        System.out.println(inputHandler.getCropPrompt());
+        return inputHandler.getBasicInput();
+    }
+    /**
      * Method to compare yields.
      */
     public void compareYields() {
@@ -65,11 +104,7 @@ public class YieldComparisonToolDriver {
             return;
         }
         //Todo: Implement comparison in Bu/ac
-        int[] validComparisonActions = {IMPORT_KG_PER_HA, IMPORT_LB_PER_AC, /*IMPORT_BU_PER_AC,*/ CANCEL_TASK};
-        int comparisonUnits = inputHandler.chooseAction(
-                inputHandler.unitsPrompt("Choose the units you wish to see yield differences in:\n"),
-                validComparisonActions
-        );
+        int comparisonUnits = getComparisonUnits();
         if (comparisonUnits == CANCEL_TASK) {
             return;
         }
@@ -80,10 +115,8 @@ public class YieldComparisonToolDriver {
                 producerYields.keySet(),
                 statsCanYields.keySet()
         );
-        int year = inputHandler.chooseAction(
-                inputHandler.yearsPrompt(), yearsIntersection, inputHandler.invalidYearPrompt(yearsIntersection));
-        System.out.println(inputHandler.cropPrompt());
-        String crop = inputHandler.getBasicInput();
+        int year = getYear(yearsIntersection);
+        String crop = getCrop();
         double diff = 0;
         try {
             diff = yc.compareCropsByYear(crop, year);
@@ -107,7 +140,7 @@ public class YieldComparisonToolDriver {
         while (action != QUIT) {
             System.out.println(inputHandler.getYieldsStatus(producerYields, statsCanYields));
             int[] validActions = {IMPORT_PRODUCER_CSV, IMPORT_STATSCAN_CSV, COMPARE_PRODUCER_STATSCAN_YIELDS, QUIT};
-            action = inputHandler.chooseAction(inputHandler.actionPrompt(), validActions);
+            action = inputHandler.chooseAction(inputHandler.getActionPrompt(), validActions);
             if (action == IMPORT_PRODUCER_CSV || action == IMPORT_STATSCAN_CSV) {
                 importFile(action);
             } else if (action == COMPARE_PRODUCER_STATSCAN_YIELDS) {
@@ -118,29 +151,39 @@ public class YieldComparisonToolDriver {
         return;
     }
 
+    /**
+     * Helper to call on Producer data importer.
+     * @param sourceUnits the units the source data is in
+     * @param fileLocation the location of the CSV to be imported
+     */
     private void importProducerCSV(int sourceUnits, String fileLocation) {
         setProducerYieldsUnits(sourceUnits);
         try {
             ProducerCSVImporter pci = new ProducerCSVImporter(fileLocation, sourceUnits);
             pci.parse();
             setProducerYields(pci.getYields());
-            System.out.println(inputHandler.mapStatus("Producer yields", true));
+            System.out.println(inputHandler.outputMapStatus("Producer yields", true));
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
-            System.out.println(inputHandler.mapStatus("Producer yields", false));
+            System.out.println(inputHandler.outputMapStatus("Producer yields", false));
         }
     }
 
+    /**
+     * Helper to call on StatsCan data importer.
+     * @param sourceUnits the units the source data is in
+     * @param fileLocation the location of the CSV to be imported
+     */
     private void importStatsCanCSV(int sourceUnits, String fileLocation) {
         setStatsCanYieldsUnits(sourceUnits);
         try {
             StatsCanCSVImporter sci = new StatsCanCSVImporter(fileLocation, sourceUnits);
             sci.parse();
             setStatsCanYields(sci.getYields());
-            System.out.println(inputHandler.mapStatus("StatsCan yields", true));
+            System.out.println(inputHandler.outputMapStatus("StatsCan yields", true));
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
-            System.out.println(inputHandler.mapStatus("StatsCan yields", false));
+            System.out.println(inputHandler.outputMapStatus("StatsCan yields", false));
         }
     }
 
@@ -223,7 +266,7 @@ public class YieldComparisonToolDriver {
      * @param args system args.
      */
     public static void main(String[] args) {
-        YieldComparisonToolDriver driver = new YieldComparisonToolDriver();
+        Driver driver = new Driver();
         driver.run();
     }
 }

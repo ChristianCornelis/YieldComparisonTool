@@ -1,6 +1,7 @@
-package project;
+package project.importers;
 
 
+import project.data.Crop;
 import project.Exceptions.YieldInvalidException;
 
 import java.io.FileNotFoundException;
@@ -16,11 +17,11 @@ public class StatsCanCSVImporter extends CSVImporter {
     /**
      * Constructor with filename, target units, and source units.
      * @param filename The file to read from.
-     * @param su The source units.
+     * @param sourceUnits The source units (kg/ha, lbs/ac, etc..).
      * @throws FileNotFoundException if the filename cannot be found.
      */
-    public StatsCanCSVImporter(String filename, int su) throws FileNotFoundException {
-        super(filename, su);
+    public StatsCanCSVImporter(String filename, int sourceUnits) throws FileNotFoundException {
+        super(filename, sourceUnits);
         yields = new HashMap<>();
     }
 
