@@ -1,7 +1,9 @@
-package project;
+package project.converters;
 
 import java.util.Map;
 import project.Exceptions.BushelsConversionKeyNotFoundException;
+import project.data.Crop;
+
 import static java.util.Map.entry;
 
 public class Converter {

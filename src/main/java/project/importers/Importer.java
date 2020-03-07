@@ -1,4 +1,6 @@
-package project;
+package project.importers;
+
+import project.Exceptions;
 
 public interface Importer {
 

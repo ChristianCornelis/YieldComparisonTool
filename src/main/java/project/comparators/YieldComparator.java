@@ -1,11 +1,14 @@
-package project;
+package project.comparators;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
+import project.converters.Converter;
+import project.data.Crop;
 import project.Exceptions.InvalidComparatorParamsException;
 import project.Exceptions.BushelsConversionKeyNotFoundException;
+import project.data.Farm;
 
 /**
  * Comparator class for yields.

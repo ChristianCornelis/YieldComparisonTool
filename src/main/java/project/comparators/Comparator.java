@@ -1,4 +1,4 @@
-package project;
+package project.comparators;
 
 import java.util.ArrayList;
 import java.util.Set;

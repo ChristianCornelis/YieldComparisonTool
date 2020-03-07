@@ -1,5 +1,11 @@
 package project;
 
+import project.comparators.YieldComparator;
+import project.data.Crop;
+import project.data.Farm;
+import project.importers.ProducerCSVImporter;
+import project.importers.StatsCanCSVImporter;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Map;

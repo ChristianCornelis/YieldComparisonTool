@@ -1,4 +1,4 @@
-package project;
+package project.data;
 
 public class Farm {
     private String name;
