@@ -1,4 +1,6 @@
-package project;
+package project.data;
+
+import project.data.Crop;
 
 public class Farm {
     private String name;

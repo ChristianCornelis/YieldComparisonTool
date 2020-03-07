@@ -1,6 +1,7 @@
-package project;
+package project.importers;
 
 
+import project.data.Crop;
 import project.Exceptions.YieldInvalidException;
 
 import java.io.FileNotFoundException;

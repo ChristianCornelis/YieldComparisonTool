@@ -1,5 +1,7 @@
 package project;
 
+import project.data.Crop;
+
 import java.util.ArrayList;
 
 /**

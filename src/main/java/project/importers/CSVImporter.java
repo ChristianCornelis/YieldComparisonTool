@@ -1,4 +1,4 @@
-package project;
+package project.importers;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;

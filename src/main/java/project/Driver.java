@@ -1,5 +1,11 @@
 package project;
 
+import project.comparators.YieldComparator;
+import project.data.Crop;
+import project.data.Farm;
+import project.importers.ProducerCSVImporter;
+import project.importers.StatsCanCSVImporter;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -9,7 +15,7 @@ import static project.PromptHelper.*;
 /**
  * Temporary driver class for the entire project.
  */
-public class YieldComparisonToolDriver {
+public class Driver {
     private InputHandler inputHandler;
     private Map<Integer, ArrayList<Farm>> producerYields;
     private Map<Integer, ArrayList<Crop>> statsCanYields;
@@ -19,7 +25,7 @@ public class YieldComparisonToolDriver {
     /**
      * Constructor.
      */
-    public YieldComparisonToolDriver() {
+    public Driver() {
         inputHandler = new InputHandler();
     }
 
@@ -223,7 +229,7 @@ public class YieldComparisonToolDriver {
      * @param args system args.
      */
     public static void main(String[] args) {
-        YieldComparisonToolDriver driver = new YieldComparisonToolDriver();
+        Driver driver = new Driver();
         driver.run();
     }
 }

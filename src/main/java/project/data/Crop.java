@@ -1,4 +1,4 @@
-package project;
+package project.data;
 
 public class Crop {
     public static final int KG_PER_HA = 0;
