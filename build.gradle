@@ -13,6 +13,8 @@ repositories {
 dependencies {
     testImplementation('junit:junit:4.13')
     implementation 'com.opencsv:opencsv:5.1'
+    implementation 'com.google.firebase:firebase-admin:6.12.2'
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
 }
 
 checkstyle {
