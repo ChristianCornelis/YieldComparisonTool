@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * Controller for database connections.
  */
-public class DatabaseClient implements ProducerDatabase, YieldDatabase {
+public class DatabaseClient implements StatsCanDatabase, ProducerDatabase, YieldDatabase {
 //    private CollectionReference producers;
     private Firestore dbClient;
     /**
@@ -73,6 +73,20 @@ public class DatabaseClient implements ProducerDatabase, YieldDatabase {
      */
     public void addNewProducerYield(int year, Crop yield) {
         CollectionReference colRef = dbClient.collection("producerYields");
+        try {
+            addNewYield(colRef, year, yield);
+        } catch (Exceptions.DatabaseWriteException dwe) {
+            System.out.println(dwe.getMessage());
+        }
+    }
+
+    /**
+     * Adds a new StatsCan yield record to the database.
+     * @param year the year of the yield
+     * @param yield the yield datastructure, a Crop object in this case.
+     */
+    public void addNewStatsCanYield(int year, Crop yield) {
+        CollectionReference colRef = dbClient.collection("statsCanYields");
         try {
             addNewYield(colRef, year, yield);
         } catch (Exceptions.DatabaseWriteException dwe) {
