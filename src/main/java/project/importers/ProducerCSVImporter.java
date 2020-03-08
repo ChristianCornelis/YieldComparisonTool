@@ -1,10 +1,8 @@
 package project.importers;
 
 import project.Exceptions;
-import project.InputHandler;
-import project.PromptHelper;
+import project.data.Crop;
 import project.data.Farm;
-
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,32 +10,25 @@ import java.util.Map;
 
 public class ProducerCSVImporter extends CSVImporter {
 
-    private Map<Integer, ArrayList<Farm>> yields;
+    private Map<Integer, ArrayList<Crop>> yields;
+    private String producer;
     /**
      * Constructor.
      * @param filename the file to parse.
      * @param sourceUnits the source units for yield.
+     * @param producerName the name of the producer.
      * @throws FileNotFoundException if the filename cannot be found.
      */
-    public ProducerCSVImporter(String filename, int sourceUnits) throws FileNotFoundException {
+    public ProducerCSVImporter(String filename, int sourceUnits, String producerName) throws FileNotFoundException {
         super(filename, sourceUnits);
         yields = new HashMap<>();
+        producer = producerName;
     }
 
-    /**
-     * Retrieves the producer name. Used for storing records in the database.
-     * @return the producer name
-     */
-    public String getProducerName() {
-        System.out.println(PromptHelper.getProducerPrompt());
-        InputHandler ih = new InputHandler();
-        return ih.getBasicInput();
-    }
     /**
      * Parses the CSV containing producer yield data.
      */
     public void parse() {
-        String producer = getProducerName();
         String[] tokens = parseLine();  //skip headers
         while ((tokens = parseLine()) != null) {
             String farmName = tokens[0];
@@ -57,7 +48,7 @@ public class ProducerCSVImporter extends CSVImporter {
             } catch (Exceptions.YieldInvalidException e) {
                 System.out.println(e.getMessage());
             }
-            Farm toPut = new Farm(farmName, location, cropName, yield, super.getSourceUnits());
+            Farm toPut = new Farm(farmName, location, cropName, yield, super.getSourceUnits(), producer, year);
             getDb().addNewProducerYield(year, toPut, producer);
             setYield(year, toPut);
         }
@@ -80,7 +71,7 @@ public class ProducerCSVImporter extends CSVImporter {
      * Getter for yields.
      * @return the yields map.
      */
-    public Map<Integer, ArrayList<Farm>> getYields() {
+    public Map<Integer, ArrayList<Crop>> getYields() {
         return yields;
     }
 
