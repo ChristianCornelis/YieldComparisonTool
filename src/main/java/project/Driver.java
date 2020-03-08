@@ -32,6 +32,7 @@ public class Driver {
         dc = new DatabaseClient();
         getProducer();
         loadPreviousProducerData();
+        loadPreviousStatsCanData();
     }
 
     /**
@@ -42,8 +43,20 @@ public class Driver {
         if (producerYields.size() != 0) {
             System.out.println(inputHandler.getWelcomeBackMsg(producer));
         }
-        setProducerYields(dc.retrieveProducerYields(producer));
+        setProducerYields(producerYields);
     }
+
+    /**
+     * Re-loads previously-imported StatsCan data into the current state of the app.
+     */
+    public void loadPreviousStatsCanData() {
+        Map<Integer, ArrayList<Crop>> statsCanYields = dc.retrieveStatsCanYields();
+        if (statsCanYields.size() != 0) {
+            System.out.println(inputHandler.getStatsCanDataLoadedMsg());
+        }
+        setStatsCanYields(statsCanYields);
+    }
+
     /**
      * Imports a file based on an action specified.
      * @param action the action specified based on static constants declared in this class.
@@ -286,7 +299,11 @@ public class Driver {
      * @param producer the producer.
      */
     public void setProducer(String producer) {
-        this.producer = producer;
+        //only set the producer if it is not an administrator!
+        if (!producer.toLowerCase().equals("admin")) {
+            this.producer = producer;
+        }
+
     }
 
     /**

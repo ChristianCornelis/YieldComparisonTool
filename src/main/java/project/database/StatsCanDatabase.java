@@ -2,6 +2,9 @@ package project.database;
 
 import project.data.Crop;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 /**
  * Interface for StatsCan database functionality.
  */
@@ -12,4 +15,10 @@ public interface StatsCanDatabase {
      * @param yield the yield datastructure, a Crop object in this case.
      */
     void addNewStatsCanYield(int year, Crop yield);
+
+    /**
+     * Retrieve all remotely-stored yields from StatsCan.
+     * @return map of all StatsCan yields.
+     */
+    Map<Integer, ArrayList<Crop>> retrieveStatsCanYields();
 }

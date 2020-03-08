@@ -132,6 +132,23 @@ public class DatabaseClient implements StatsCanDatabase, ProducerDatabase, Yield
     }
 
     /**
+     * Retrieve all remotely-stored yields from StatsCan.
+     * @return map of all StatsCan yields.
+     */
+    public Map<Integer, ArrayList<Crop>> retrieveStatsCanYields() {
+        CollectionReference colRef = dbClient.collection("statsCanYields");
+        ApiFuture<QuerySnapshot> future = colRef.get();
+        List<QueryDocumentSnapshot> documents = null;
+        try {
+            documents = future.get().getDocuments();
+        } catch (Exception e) {
+            //TODO: Custom error here.
+            System.out.println(e.getMessage());
+        }
+        return convertRecordsToMap(documents);
+    }
+
+    /**
      * Converts records from the DB to a map.
      * @param documents database records to be parsed.
      * @return a map containing years as keys
@@ -140,6 +157,7 @@ public class DatabaseClient implements StatsCanDatabase, ProducerDatabase, Yield
         Map<Integer, ArrayList<Crop>> yields = new HashMap<>();
         Crop crop = null;
         for (QueryDocumentSnapshot doc : documents) {
+            //if we have a "producer" field, we're dealing with a Farm object.
             if (doc.getData().keySet().contains("producer")) {
                 crop = doc.toObject(Farm.class);
             } else {
