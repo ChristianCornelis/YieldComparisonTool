@@ -1,4 +1,5 @@
 package project.database;
+import project.Exceptions;
 import project.data.Crop;
 import com.google.cloud.firestore.CollectionReference;
 /**
@@ -11,8 +12,10 @@ public interface YieldDatabase {
      * @param year the year of the yield
      * @param yield the yield itself
      * @param source the source of the yield (StatsCan, or producer name)
+     * @throws project.Exceptions.DatabaseWriteException if an exception occurs.
      */
-   void addNewYield(CollectionReference colRef, int year, Crop yield, String source);
+   void addNewYield(CollectionReference colRef, int year, Crop yield, String source)
+           throws Exceptions.DatabaseWriteException;
 
 
     /**

@@ -52,6 +52,8 @@ public class Exceptions {
          * Constructor.
          * @param msg the message to contain in the exception.
          */
-        public DatabaseWriteException(String msg) { super(msg); }
+        public DatabaseWriteException(String msg) {
+            super(msg);
+        }
     }
 }

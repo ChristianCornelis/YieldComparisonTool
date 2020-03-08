@@ -15,6 +15,7 @@ import com.google.cloud.firestore.DocumentReference;
 //import com.google.cloud.firestore.WriteResult;
 //import com.google.cloud.firestore.FieldValue;
 
+import project.Exceptions;
 import project.data.Crop;
 import project.data.Farm;
 
@@ -77,22 +78,6 @@ public class DatabaseController implements ProducerDatabase, YieldDatabase {
         }
     }
 
-//    public void createNewProducer(String producerName, String city, String province) {
-//        try {
-//            DocumentReference docRef = producers.document(producerName);
-//            Map<String, Object> data = new HashMap<>();
-//            data.put("city", city);
-//            data.put("province", province);
-//            ApiFuture<WriteResult> result = docRef.set(data);
-//            // ...
-//            // result.get() blocks on response
-//            System.out.println("Update time : " + result.get().getUpdateTime());
-//        } catch (Exception e) {
-//            //TODO: Create and throw a custom firebase exception here
-//            System.out.println(e.getMessage());
-//        }
-//    }
-
     /**
      * Adds a new producer yield record to the database.
      * @param year the year of the yield
@@ -101,7 +86,12 @@ public class DatabaseController implements ProducerDatabase, YieldDatabase {
      */
     public void addNewProducerYield(int year, Farm yield, String producer) {
         CollectionReference colRef = dbClient.collection("producerYields");
-        addNewYield(colRef, year, yield, producer);
+        try {
+            addNewYield(colRef, year, yield, producer);
+        } catch (Exceptions.DatabaseWriteException dwe) {
+            System.out.println(dwe.getMessage());
+        }
+
     }
 
     /**
@@ -110,27 +100,20 @@ public class DatabaseController implements ProducerDatabase, YieldDatabase {
      * @param year the year of the yield
      * @param yield the yield itself
      * @param source the source of the yield (StatsCan, or producer name)
+     * @throws project.Exceptions.DatabaseWriteException if an exception occurs.
      */
-    public void addNewYield(CollectionReference colRef, int year, Crop yield, String source) {
+    public void addNewYield(CollectionReference colRef, int year, Crop yield, String source)
+            throws Exceptions.DatabaseWriteException {
         try {
             Map<String, Object> data = yield.toMap();
             data.put("year", year);
             data.put("producer", source);
             ApiFuture<DocumentReference> addedDocRef = colRef.add(data);
         } catch (Exception e) {
-            //TODO: Create and throw a custom firebase exception here
             System.out.println(e.getMessage());
-        }
-    }
+            throw new Exceptions.DatabaseWriteException("ERROR Failed to write record to database.");
 
-    /**
-     * Dricer to test db.
-     * @param args the args
-     */
-    public static void main(String[] args) {
-        DatabaseController dc = new DatabaseController();
-//        dc.createNewProducer("Woo sus", "Gurjuelph", "ON");
-        dc.addNewProducerYield(2019, new Farm("TestFarm", "Ailsa Craig", "corn", 1002, Crop.KG_PER_HA), "Test");
+        }
     }
 }
 
