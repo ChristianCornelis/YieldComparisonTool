@@ -14,9 +14,8 @@ public interface ProducerDatabase {
      * Adds a new producer yield record to the database.
      * @param year the year of the yield
      * @param yield the yield datastructure, a Farm object in this case (extends Crop).
-     * @param producer the producer
      */
-    void addNewProducerYield(int year, Crop yield, String producer);
+    void addNewProducerYield(int year, Crop yield);
 
     /**
      * Retrieve all remotely-stored yields for a particular producer.

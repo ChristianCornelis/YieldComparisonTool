@@ -70,12 +70,11 @@ public class DatabaseClient implements ProducerDatabase, YieldDatabase {
      * Adds a new producer yield record to the database.
      * @param year the year of the yield
      * @param yield the yield datastructure, a Farm object in this case (extends Crop).
-     * @param producer the producer
      */
-    public void addNewProducerYield(int year, Crop yield, String producer) {
+    public void addNewProducerYield(int year, Crop yield) {
         CollectionReference colRef = dbClient.collection("producerYields");
         try {
-            addNewYield(colRef, year, yield, producer);
+            addNewYield(colRef, year, yield);
         } catch (Exceptions.DatabaseWriteException dwe) {
             System.out.println(dwe.getMessage());
         }
@@ -86,15 +85,12 @@ public class DatabaseClient implements ProducerDatabase, YieldDatabase {
      * @param colRef The reference to the collection used to store the new yield.
      * @param year the year of the yield
      * @param yield the yield itself
-     * @param source the source of the yield (StatsCan, or producer name)
      * @throws project.Exceptions.DatabaseWriteException if an exception occurs.
      */
-    public void addNewYield(CollectionReference colRef, int year, Crop yield, String source)
+    public void addNewYield(CollectionReference colRef, int year, Crop yield)
             throws Exceptions.DatabaseWriteException {
         try {
             Map<String, Object> data = yield.toMap();
-            data.put("year", year);
-            data.put("producer", source);
             ApiFuture<DocumentReference> addedDocRef = colRef.add(data);
         } catch (Exception e) {
             System.out.println(e.getMessage());

@@ -17,10 +17,9 @@ public interface YieldDatabase {
      * @param colRef The reference to the collection used to store the new yield.
      * @param year the year of the yield
      * @param yield the yield itself
-     * @param source the source of the yield (StatsCan, or producer name)
      * @throws project.Exceptions.DatabaseWriteException if an exception occurs.
      */
-   void addNewYield(CollectionReference colRef, int year, Crop yield, String source)
+   void addNewYield(CollectionReference colRef, int year, Crop yield)
            throws Exceptions.DatabaseWriteException;
 
     /**
