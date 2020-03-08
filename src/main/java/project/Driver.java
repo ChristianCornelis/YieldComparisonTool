@@ -2,7 +2,7 @@ package project;
 
 import project.comparators.YieldComparator;
 import project.data.Crop;
-import project.database.DatabaseController;
+import project.database.DatabaseClient;
 import project.importers.ProducerCSVImporter;
 import project.importers.StatsCanCSVImporter;
 
@@ -21,7 +21,7 @@ public class Driver {
     private Map<Integer, ArrayList<Crop>> statsCanYields;
     private int producerYieldsUnits;
     private int statsCanYieldsUnits;
-    private DatabaseController dc;
+    private DatabaseClient dc;
     private String producer;
 
     /**
@@ -29,7 +29,7 @@ public class Driver {
      */
     public Driver() {
         inputHandler = new InputHandler();
-        dc = new DatabaseController();
+        dc = new DatabaseClient();
         getProducer();
         loadPreviousProducerData();
     }

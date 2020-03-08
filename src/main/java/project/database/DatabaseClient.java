@@ -10,8 +10,8 @@ import com.google.cloud.firestore.CollectionReference;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
 //import com.google.cloud.firestore.FirestoreOptions;
-//import com.google.cloud.firestore.QueryDocumentSnapshot;
-//import com.google.cloud.firestore.QuerySnapshot;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.cloud.firestore.QuerySnapshot;
 //import com.google.cloud.firestore.WriteResult;
 //import com.google.cloud.firestore.FieldValue;
 
@@ -22,35 +22,23 @@ import project.data.Farm;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 /**
  * Controller for database connections.
  */
-public class DatabaseController implements ProducerDatabase, YieldDatabase {
+public class DatabaseClient implements ProducerDatabase, YieldDatabase {
 //    private CollectionReference producers;
     private Firestore dbClient;
     /**
      * Inits the connection to the db.
      */
-    public DatabaseController() {
+    public DatabaseClient() {
         initConnection();
         dbClient = FirestoreClient.getFirestore();
-//        producers = dbClient.collection("producers");
-
-//        try {
-//            System.out.println("pls");
-//            ApiFuture<QuerySnapshot> query = db.collection("producerYields").get();
-//            QuerySnapshot querySnapshot = query.get();
-//            List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
-//            for (QueryDocumentSnapshot document : documents) {
-//                System.out.println("ID: " + document.getId());
-//            }
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//        }
-        // asynchronously retrieve all users
-
     }
 
     /**
@@ -84,14 +72,13 @@ public class DatabaseController implements ProducerDatabase, YieldDatabase {
      * @param yield the yield datastructure, a Farm object in this case (extends Crop).
      * @param producer the producer
      */
-    public void addNewProducerYield(int year, Farm yield, String producer) {
+    public void addNewProducerYield(int year, Crop yield, String producer) {
         CollectionReference colRef = dbClient.collection("producerYields");
         try {
             addNewYield(colRef, year, yield, producer);
         } catch (Exceptions.DatabaseWriteException dwe) {
             System.out.println(dwe.getMessage());
         }
-
     }
 
     /**
@@ -115,6 +102,51 @@ public class DatabaseController implements ProducerDatabase, YieldDatabase {
 
         }
     }
+
+    /**
+     * Retrieve all remotely-stored yields for a particular producer.
+     * @param producer the producer name.
+     * @return map of all yields for the given producer.
+     */
+    public Map<Integer, ArrayList<Crop>> retrieveProducerYields(String producer) {
+        CollectionReference colRef = dbClient.collection("producerYields");
+        ApiFuture<QuerySnapshot> future = colRef.whereEqualTo("producer", producer).get();
+        List<QueryDocumentSnapshot> documents = null;
+        try {
+            documents = future.get().getDocuments();
+        } catch (Exception e) {
+            //TODO: Custom error here.
+            System.out.println(e.getMessage());
+        }
+        return convertRecordsToMap(documents);
+    }
+
+    /**
+     * Converts records from the DB to a map.
+     * @param documents database records to be parsed.
+     * @return a map containing years as keys
+     */
+    public Map<Integer, ArrayList<Crop>> convertRecordsToMap(List<QueryDocumentSnapshot> documents) {
+        Map<Integer, ArrayList<Crop>> yields = new HashMap<>();
+        Crop crop = null;
+        for (QueryDocumentSnapshot doc : documents) {
+            if (doc.getData().keySet().contains("producer")) {
+                crop = doc.toObject(Farm.class);
+            } else {
+                crop = doc.toObject(Crop.class);
+            }
+
+            if (!yields.containsKey(crop.getYear())) {
+                Crop finalCrop = crop;  //IDEK - weird errors
+                yields.put(crop.getYear(), new ArrayList<>() {{ add(finalCrop); }});
+            } else {
+                yields.get(crop.getYear()).add(crop);
+            }
+        }
+
+        return yields;
+    }
+
 }
 
 

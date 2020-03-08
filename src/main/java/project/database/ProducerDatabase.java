@@ -1,6 +1,9 @@
 package project.database;
 
-import project.data.Farm;
+import project.data.Crop;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Interface for producer DBs.
@@ -13,5 +16,12 @@ public interface ProducerDatabase {
      * @param yield the yield datastructure, a Farm object in this case (extends Crop).
      * @param producer the producer
      */
-    void addNewProducerYield(int year, Farm yield, String producer);
+    void addNewProducerYield(int year, Crop yield, String producer);
+
+    /**
+     * Retrieve all remotely-stored yields for a particular producer.
+     * @param producer the producer name.
+     * @return map of all yields for the given producer.
+     */
+    Map<Integer, ArrayList<Crop>> retrieveProducerYields(String producer);
 }
