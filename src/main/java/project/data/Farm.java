@@ -1,9 +1,11 @@
 package project.data;
 
-public class Farm {
+import java.util.Map;
+
+public class Farm extends Crop {
     private String name;
     private String location;
-    private Crop crop;
+//    private Crop crop;
 
     /**
      * Constructor.
@@ -14,18 +16,20 @@ public class Farm {
      * @param cropUnits the units the crop is in.
      */
     public Farm(String farmName, String farmLocation, String cropType, double cropYield, int cropUnits) {
+        super(cropType, cropYield, cropUnits);
         name = farmName;
         location = farmLocation;
-        crop = new Crop(cropType, cropYield, cropUnits);
+//        type = cropType;
+//        crop = new Crop(cropType, cropYield, cropUnits);
     }
 
     /**
      * Returns the crop instance variable.
      * @return Crop
      */
-    public Crop getCrop() {
-        return crop;
-    }
+//    public Crop getCrop() {
+//        return super.;
+//    }
 
     /**
      * Retrieves the farm name.
@@ -69,7 +73,19 @@ public class Farm {
         return "Farm{" +
                 "name='" + name + '\'' +
                 ", location='" + location + '\'' +
-                ", crop=" + crop.toString() +
+                ", crop=" + super.toString() +
                 '}';
+    }
+
+    /**
+     * Returns a map of the instance variables. Used for database operations.
+     * @return a Map with instance variable names as keys and values of those variables as values.
+     */
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = super.toMap();
+        map.put("name", name);
+        map.put("location", location);
+
+        return map;
     }
 }

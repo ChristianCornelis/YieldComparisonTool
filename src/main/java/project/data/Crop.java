@@ -1,5 +1,8 @@
 package project.data;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Crop {
     public static final int KG_PER_HA = 0;
     public static final int LBS_PER_AC = 1;
@@ -80,5 +83,18 @@ public class Crop {
                 + ", type='" + type + '\''
                 + ", yield=" + yield
                 + '}';
+    }
+
+    /**
+     * Returns a map of the instance variables. Used for database operations.
+     * @return a Map with instance variable names as keys and values of those variables as values.
+     */
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("yield", yield);
+        map.put("type", type);
+        map.put("units", units);
+
+        return map;
     }
 }
