@@ -2,7 +2,7 @@ package project;
 
 import project.comparators.YieldComparator;
 import project.data.Crop;
-import project.data.Farm;
+import project.database.DatabaseController;
 import project.importers.ProducerCSVImporter;
 import project.importers.StatsCanCSVImporter;
 
@@ -17,18 +17,33 @@ import static project.PromptHelper.*;
  */
 public class Driver {
     private InputHandler inputHandler;
-    private Map<Integer, ArrayList<Farm>> producerYields;
+    private Map<Integer, ArrayList<Crop>> producerYields;
     private Map<Integer, ArrayList<Crop>> statsCanYields;
     private int producerYieldsUnits;
     private int statsCanYieldsUnits;
+    private DatabaseController dc;
+    private String producer;
 
     /**
      * Constructor.
      */
     public Driver() {
         inputHandler = new InputHandler();
+        dc = new DatabaseController();
+        getProducer();
+        loadPreviousProducerData();
     }
 
+    /**
+     * Re-loads previously-imported producer data.
+     */
+    public void loadPreviousProducerData() {
+        Map<Integer, ArrayList<Crop>> producerYields = dc.retrieveProducerYields(producer);
+        if (producerYields.size() != 0) {
+            System.out.println(inputHandler.getWelcomeBackMsg(producer));
+        }
+        setProducerYields(dc.retrieveProducerYields(producer));
+    }
     /**
      * Imports a file based on an action specified.
      * @param action the action specified based on static constants declared in this class.
@@ -95,6 +110,11 @@ public class Driver {
         System.out.println(inputHandler.getCropPrompt());
         return inputHandler.getBasicInput();
     }
+
+    private void getProducer() {
+        System.out.println(PromptHelper.getProducerPrompt());
+        setProducer(inputHandler.getBasicInput());
+    }
     /**
      * Method to compare yields.
      */
@@ -159,7 +179,7 @@ public class Driver {
     private void importProducerCSV(int sourceUnits, String fileLocation) {
         setProducerYieldsUnits(sourceUnits);
         try {
-            ProducerCSVImporter pci = new ProducerCSVImporter(fileLocation, sourceUnits);
+            ProducerCSVImporter pci = new ProducerCSVImporter(fileLocation, sourceUnits, producer);
             pci.parse();
             setProducerYields(pci.getYields());
             System.out.println(inputHandler.outputMapStatus("Producer yields", true));
@@ -233,7 +253,7 @@ public class Driver {
      * Setter for producerYields map.
      * @param producerYields the yields to set to.
      */
-    public void setProducerYields(Map<Integer, ArrayList<Farm>> producerYields) {
+    public void setProducerYields(Map<Integer, ArrayList<Crop>> producerYields) {
         this.producerYields = producerYields;
     }
 
@@ -259,6 +279,14 @@ public class Driver {
      */
     public void setStatsCanYieldsUnits(int statsCanYieldsUnits) {
         this.statsCanYieldsUnits = statsCanYieldsUnits;
+    }
+
+    /**
+     * Setter for producer.
+     * @param producer the producer.
+     */
+    public void setProducer(String producer) {
+        this.producer = producer;
     }
 
     /**

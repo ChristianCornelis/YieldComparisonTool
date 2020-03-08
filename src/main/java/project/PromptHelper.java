@@ -101,6 +101,15 @@ public abstract class PromptHelper {
      * @return the string to output.
      */
     public static String getProducerPrompt() {
-        return "Enter the name of the producer";
+        return "Welcome to the Yield Comparison Tool!\nEnter the producer name you wish to use the application as:";
+    }
+
+    /**
+     * Prompt for welcoming back the user.
+     * @param producer the producer
+     * @return the string containing the prompt.
+     */
+    public String getWelcomeBackMsg(String producer) {
+        return "The previously-imported yields for producer '" + producer + "' have been re-loaded.";
     }
 }
