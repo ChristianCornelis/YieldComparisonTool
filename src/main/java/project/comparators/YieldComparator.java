@@ -156,11 +156,11 @@ public class YieldComparator implements Comparator {
     private double retrieveProducerCropYield(String crop, ArrayList<Farm> yields)
             throws InvalidComparatorParamsException, BushelsConversionKeyNotFoundException {
         for (Farm yield : yields) {
-            if (yield.getCrop().getType().equals(crop)) {
-                if (yield.getCrop().getUnits() == targetUnits) {
-                    return yield.getCrop().getYield();
+            if (yield.getType().equals(crop)) {
+                if (yield.getUnits() == targetUnits) {
+                    return yield.getYield();
                 } else {
-                    return converter.convertYield(yield.getCrop().getYield(), crop, producerUnits, targetUnits);
+                    return converter.convertYield(yield.getYield(), crop, producerUnits, targetUnits);
                 }
             }
         }
