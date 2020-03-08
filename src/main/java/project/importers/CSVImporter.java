@@ -9,6 +9,7 @@ import java.util.Map;
 import java.io.IOException;
 import com.opencsv.CSVReader;
 import project.Exceptions.YieldInvalidException;
+import project.database.DatabaseController;
 
 /**
  * Abstract class containing methods that an importer should contain for both
@@ -18,6 +19,7 @@ public abstract class CSVImporter implements Importer {
     private CSVReader csvReader;
     private Map<Integer, ArrayList<Object>> yields;
     private int sourceUnits;
+    private DatabaseController db;
 
     /**
      * Construct for CSV importer. Used by all subclasses.
@@ -29,6 +31,7 @@ public abstract class CSVImporter implements Importer {
         csvReader = new CSVReader(new FileReader(filename));
         yields = new HashMap<Integer, ArrayList<Object>>();
         this.sourceUnits = sourceUnits;
+        db = new DatabaseController();
     }
 
     /**
@@ -97,6 +100,14 @@ public abstract class CSVImporter implements Importer {
      */
     public CSVReader getCsvReader() {
         return csvReader;
+    }
+
+    /**
+     * Getter for db controller.
+     * @return the db controller
+     */
+    public DatabaseController getDb() {
+        return db;
     }
 
     /**

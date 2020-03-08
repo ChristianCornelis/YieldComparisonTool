@@ -1,6 +1,8 @@
 package project.importers;
 
 import project.Exceptions;
+import project.InputHandler;
+import project.PromptHelper;
 import project.data.Farm;
 
 import java.io.FileNotFoundException;
@@ -23,9 +25,19 @@ public class ProducerCSVImporter extends CSVImporter {
     }
 
     /**
+     * Retrieves the producer name. Used for storing records in the database.
+     * @return the producer name
+     */
+    public String getProducerName() {
+        System.out.println(PromptHelper.getProducerPrompt());
+        InputHandler ih = new InputHandler();
+        return ih.getBasicInput();
+    }
+    /**
      * Parses the CSV containing producer yield data.
      */
     public void parse() {
+        String producer = getProducerName();
         String[] tokens = parseLine();  //skip headers
         while ((tokens = parseLine()) != null) {
             String farmName = tokens[0];
@@ -46,6 +58,7 @@ public class ProducerCSVImporter extends CSVImporter {
                 System.out.println(e.getMessage());
             }
             Farm toPut = new Farm(farmName, location, cropName, yield, super.getSourceUnits());
+            getDb().addNewProducerYield(year, toPut, producer);
             setYield(year, toPut);
         }
     }
