@@ -11,19 +11,28 @@ public class Crop {
     private int units;
     private String type;
     private double yield;
+    private int year;
 
     /**
      * Constructor.
      * @param cropType The crop type
      * @param cropYield The crop yield value
      * @param cropUnits The units that the yield is in
+     * @param yr the year of the yield.
      */
-    public Crop(String cropType, double cropYield, int cropUnits) {
+    public Crop(String cropType, double cropYield, int cropUnits, int yr) {
         this.type = cropType;
         this.yield = cropYield;
         this.units = cropUnits;
+        this.year = yr;
     }
 
+    /**
+     * No-arg constructor for deserializing objects from Firebase.
+     */
+    public Crop() {
+
+    }
     /**
      * Getter for yield.
      * @return The yield of the crop
@@ -49,6 +58,14 @@ public class Crop {
     }
 
     /**
+     * The getter for the year of the crop.
+     * @return the year.
+     */
+    public int getYear() {
+        return year;
+    }
+
+    /**
      * Setter for the yield.
      * @param toSet The yield to set to
      */
@@ -70,6 +87,14 @@ public class Crop {
      */
     public void setType(String toSet) {
         this.type = toSet;
+    }
+
+    /**
+     * Setter for the year.
+     * @param year the year to set the year to.
+     */
+    public void setYear(int year) {
+        this.year = year;
     }
 
     /**

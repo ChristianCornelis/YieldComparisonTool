@@ -3,9 +3,9 @@ package project.data;
 import java.util.Map;
 
 public class Farm extends Crop {
+    private String producer;
     private String name;
     private String location;
-//    private Crop crop;
 
     /**
      * Constructor.
@@ -14,22 +14,23 @@ public class Farm extends Crop {
      * @param cropType the type of crop grown on the farm in a given year
      * @param cropYield the yield of the crop grown
      * @param cropUnits the units the crop is in.
+     * @param producerName the name of the producer
+     * @param year the year.
      */
-    public Farm(String farmName, String farmLocation, String cropType, double cropYield, int cropUnits) {
-        super(cropType, cropYield, cropUnits);
+    public Farm(String farmName, String farmLocation, String cropType,
+                double cropYield, int cropUnits, String producerName, int year) {
+        super(cropType, cropYield, cropUnits, year);
         name = farmName;
         location = farmLocation;
-//        type = cropType;
-//        crop = new Crop(cropType, cropYield, cropUnits);
+        producer = producerName;
     }
 
     /**
-     * Returns the crop instance variable.
-     * @return Crop
+     * No-arg constructor for deserializing objects from Firebase.
      */
-//    public Crop getCrop() {
-//        return super.;
-//    }
+    public Farm() {
+
+    }
 
     /**
      * Retrieves the farm name.
@@ -48,6 +49,14 @@ public class Farm extends Crop {
     }
 
     /**
+     * Returns the producer.
+     * @return the producer, string.
+     */
+    public String getProducer() {
+        return producer;
+    }
+
+    /**
      * Sets the farm location.
      * @param location the new location
      */
@@ -63,6 +72,13 @@ public class Farm extends Crop {
         this.name = name;
     }
 
+    /**
+     * Setter for producer.
+     * @param producer the producer
+     */
+    public void setProducer(String producer) {
+        this.producer = producer;
+    }
 
     /**
      * Returns a string containing all attributes of the farm class.
@@ -85,6 +101,7 @@ public class Farm extends Crop {
         Map<String, Object> map = super.toMap();
         map.put("name", name);
         map.put("location", location);
+        map.put("producer", producer);
 
         return map;
     }
