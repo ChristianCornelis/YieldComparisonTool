@@ -43,4 +43,17 @@ public class Exceptions {
             super(msg);
         }
     }
+
+    /**
+     * Exception for when DB writes fail.
+     */
+    public static class DatabaseWriteException extends Exception {
+        /**
+         * Constructor.
+         * @param msg the message to contain in the exception.
+         */
+        public DatabaseWriteException(String msg) {
+            super(msg);
+        }
+    }
 }

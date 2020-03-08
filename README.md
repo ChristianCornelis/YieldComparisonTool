@@ -25,7 +25,33 @@ I would suggest running via `gradle run -q --console=plain` to reduce the overla
 - The status of what data is loaded into the application is input above the menu.
 - Minimal error checking was done on importing data in incorrect formats. I would suggest adhering to the above guidelines :D
 
-## User Stories
+## Glossary of Terms and Constants
+- Yields, weights, and areas must be converted in order for comparisons to be done in either metric or imperial units.
+  This section aims to explain some of these units and conversions. Constants can be found in src/main/java/project/Converter.java
+
+| Term | Explanation |
+| ---- | --------- |
+| Bushel | An imperial measurement equivalent to 64 US pints (or 32.5 liters) commonly used to measure the yield of crops. This amount of goods in a bushel varies based on crop size and density. |
+| Acre | An imperial measurement of area equivalent to 66 x 660 feet, or 43 560 square feet. Equivalent to 4047 square meters, or about 0.4 hectares. |
+| Hectare | A metric unit of square measurement that is 10 000 square meters, or 100m x 100m. Equivalent to 2.471 acres. |
+
+| Constant | Explanation |
+| -------- | --------- |
+| KGS_PER_HA_TO_LBS_PER_AC_FACTOR | The factor used to convert yields between the metric units, kilograms per hectare, to the imperial units pounds per acre. |
+| LBS_PER_AC_TO_KG_PER_HA_FACTOR | The factor used to convert yields between the imperial units, pounds per acre, to the metric units, kilograms per acre.|
+| KGS_TO_LBS_FACTOR | The factor to convert weights from kilograms (metric) to pounds (imperial). |
+| LBS_TO_KGS_FACTOR | The factor to convert weights from pounds (imperial) to kilograms (metric). |
+| HA_TO_AC_FACTOR | The factor to convert areas measured in hectares (metric) to acres (imperial). |
+| AC_TO_HA_FACTOR | The factor to convert areas measured in acres (imperial) to hectares (metric). |
+
+# M2 Documentation
+## M2 User Stories
+- As a producer, I want to be able to import my production data once and have it stored between application uses so I do not have to import data every time the app is used.
+    - Given that I have imported a CSV file successfully, when I quit the application, and re-open it my data is stored for use at a later time.
+    - Given that I have not imported a CSV file successfully, when I quit the application and re-open it, no producer data is populated in the application.
+
+# M1 Documentation
+## M1 User Stories
 - As a producer, I want to be able to add my production data for multiple years and crops so that I may compare them against national averages.
     - Given that I have a CSV file containing production data in the correct format, when I choose to import my production data, I am able to specify what units the data is in.
         - See the YieldComparisonToolDriver class method importFile().
@@ -70,29 +96,4 @@ enforce the fact that producers should not be capable of seeing or using other p
  the Crop class and PromptHelper class (as they can be accessed directly), and the Producer yield maps found inn the YieldComparator and YieldComparisonToolDriver.
  - I attempted to abstract my class definitions as much as possible by defining interfaces that were then used by classes. This reinforced extendability while maintaining specific implementation
  details at the lowest level possible.
- 
-<<<<<<< HEAD
- ## Glossary for Industry-Specific Terms and Constants
- - **HA**: Hectare(s), the metric measurement for an area, used to measure the size of fields.
- - **AC**: Acre(s), the imperial measurement for an area, used to measure the size of fields.
- - 
-=======
-## Glossary of Terms and Constants
-- Yields, weights, and areas must be converted in order for comparisons to be done in either metric or imperial units.
-  This section aims to explain some of these units and conversions. Constants can be found in src/main/java/project/Converter.java
 
-| Term | Explanation |
-| ---- | --------- |
-| Bushel | An imperial measurement equivalent to 64 US pints (or 32.5 liters) commonly used to measure the yield of crops. This amount of goods in a bushel varies based on crop size and density. |
-| Acre | An imperial measurement of area equivalent to 66 x 660 feet, or 43 560 square feet. Equivalent to 4047 square meters, or about 0.4 hectares. |
-| Hectare | A metric unit of square measurement that is 10 000 square meters, or 100m x 100m. Equivalent to 2.471 acres. |
-
-| Constant | Explanation |
-| -------- | --------- |
-| KGS_PER_HA_TO_LBS_PER_AC_FACTOR | The factor used to convert yields between the metric units, kilograms per hectare, to the imperial units pounds per acre. |
-| LBS_PER_AC_TO_KG_PER_HA_FACTOR | The factor used to convert yields between the imperial units, pounds per acre, to the metric units, kilograms per acre.|
-| KGS_TO_LBS_FACTOR | The factor to convert weights from kilograms (metric) to pounds (imperial). |
-| LBS_TO_KGS_FACTOR | The factor to convert weights from pounds (imperial) to kilograms (metric). |
-| HA_TO_AC_FACTOR | The factor to convert areas measured in hectares (metric) to acres (imperial). |
-| AC_TO_HA_FACTOR | The factor to convert areas measured in acres (imperial) to hectares (metric). |
->>>>>>> master

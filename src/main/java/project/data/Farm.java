@@ -1,9 +1,11 @@
 package project.data;
 
-public class Farm {
+import java.util.Map;
+
+public class Farm extends Crop {
+    private String producer;
     private String name;
     private String location;
-    private Crop crop;
 
     /**
      * Constructor.
@@ -12,19 +14,22 @@ public class Farm {
      * @param cropType the type of crop grown on the farm in a given year
      * @param cropYield the yield of the crop grown
      * @param cropUnits the units the crop is in.
+     * @param producerName the name of the producer
+     * @param year the year.
      */
-    public Farm(String farmName, String farmLocation, String cropType, double cropYield, int cropUnits) {
+    public Farm(String farmName, String farmLocation, String cropType,
+                double cropYield, int cropUnits, String producerName, int year) {
+        super(cropType, cropYield, cropUnits, year);
         name = farmName;
         location = farmLocation;
-        crop = new Crop(cropType, cropYield, cropUnits);
+        producer = producerName;
     }
 
     /**
-     * Returns the crop instance variable.
-     * @return Crop
+     * No-arg constructor for deserializing objects from Firebase.
      */
-    public Crop getCrop() {
-        return crop;
+    public Farm() {
+
     }
 
     /**
@@ -44,6 +49,14 @@ public class Farm {
     }
 
     /**
+     * Returns the producer.
+     * @return the producer, string.
+     */
+    public String getProducer() {
+        return producer;
+    }
+
+    /**
      * Sets the farm location.
      * @param location the new location
      */
@@ -59,6 +72,13 @@ public class Farm {
         this.name = name;
     }
 
+    /**
+     * Setter for producer.
+     * @param producer the producer
+     */
+    public void setProducer(String producer) {
+        this.producer = producer;
+    }
 
     /**
      * Returns a string containing all attributes of the farm class.
@@ -69,7 +89,20 @@ public class Farm {
         return "Farm{" +
                 "name='" + name + '\'' +
                 ", location='" + location + '\'' +
-                ", crop=" + crop.toString() +
+                ", crop=" + super.toString() +
                 '}';
+    }
+
+    /**
+     * Returns a map of the instance variables. Used for database operations.
+     * @return a Map with instance variable names as keys and values of those variables as values.
+     */
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = super.toMap();
+        map.put("name", name);
+        map.put("location", location);
+        map.put("producer", producer);
+
+        return map;
     }
 }

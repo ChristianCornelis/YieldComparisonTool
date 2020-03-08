@@ -1,5 +1,8 @@
 package project.data;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Crop {
     public static final int KG_PER_HA = 0;
     public static final int LBS_PER_AC = 1;
@@ -8,19 +11,28 @@ public class Crop {
     private int units;
     private String type;
     private double yield;
+    private int year;
 
     /**
      * Constructor.
      * @param cropType The crop type
      * @param cropYield The crop yield value
      * @param cropUnits The units that the yield is in
+     * @param yr the year of the yield.
      */
-    public Crop(String cropType, double cropYield, int cropUnits) {
+    public Crop(String cropType, double cropYield, int cropUnits, int yr) {
         this.type = cropType;
         this.yield = cropYield;
         this.units = cropUnits;
+        this.year = yr;
     }
 
+    /**
+     * No-arg constructor for deserializing objects from Firebase.
+     */
+    public Crop() {
+
+    }
     /**
      * Getter for yield.
      * @return The yield of the crop
@@ -43,6 +55,14 @@ public class Crop {
      */
     public String getType() {
         return type;
+    }
+
+    /**
+     * The getter for the year of the crop.
+     * @return the year.
+     */
+    public int getYear() {
+        return year;
     }
 
     /**
@@ -70,6 +90,14 @@ public class Crop {
     }
 
     /**
+     * Setter for the year.
+     * @param year the year to set the year to.
+     */
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    /**
      * ToString method for debugging.
      * @return all attributes of the object in a string
      */
@@ -80,5 +108,18 @@ public class Crop {
                 + ", type='" + type + '\''
                 + ", yield=" + yield
                 + '}';
+    }
+
+    /**
+     * Returns a map of the instance variables. Used for database operations.
+     * @return a Map with instance variable names as keys and values of those variables as values.
+     */
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("yield", yield);
+        map.put("type", type);
+        map.put("units", units);
+
+        return map;
     }
 }

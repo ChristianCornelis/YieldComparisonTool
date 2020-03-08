@@ -52,7 +52,6 @@ public class StatsCanCSVImporter extends CSVImporter {
                 } catch (YieldInvalidException e) {
                     System.out.println(e.getMessage());
                 }
-                Crop toPut = new Crop(cropName, yield, super.getSourceUnits());
                 int year = 0;
                 try {
                     year = parseYear(yearString);
@@ -60,6 +59,7 @@ public class StatsCanCSVImporter extends CSVImporter {
                     System.out.println(e.getMessage());
                     continue;
                 }
+                Crop toPut = new Crop(cropName, yield, super.getSourceUnits(), year);
                 setYield(year, toPut);
                 tokenCnt++;
             }

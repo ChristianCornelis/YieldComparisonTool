@@ -8,7 +8,6 @@ import project.converters.Converter;
 import project.data.Crop;
 import project.Exceptions.InvalidComparatorParamsException;
 import project.Exceptions.BushelsConversionKeyNotFoundException;
-import project.data.Farm;
 
 /**
  * Comparator class for yields.
@@ -19,7 +18,7 @@ public class YieldComparator implements Comparator {
     private int producerUnits;
     private int statsCanUnits;
     private int targetUnits;
-    private Map<Integer, ArrayList<Farm>> producerYields;
+    private Map<Integer, ArrayList<Crop>> producerYields;
     private Map<Integer, ArrayList<Crop>> statsCanYields;
 
     /**
@@ -32,7 +31,7 @@ public class YieldComparator implements Comparator {
      */
     public YieldComparator(
             int pYieldUnits, int sYieldUnits, int tYieldUnits,
-            Map<Integer, ArrayList<Farm>> pYields, Map<Integer, ArrayList<Crop>> sYields
+            Map<Integer, ArrayList<Crop>> pYields, Map<Integer, ArrayList<Crop>> sYields
     ) {
         converter = new Converter();
         producerUnits = pYieldUnits;
@@ -153,14 +152,14 @@ public class YieldComparator implements Comparator {
      * @throws InvalidComparatorParamsException if the crop does not exist in the arraylist.
      * @throws BushelsConversionKeyNotFoundException if the crop cannot be converted to bushels if necessary.
      */
-    private double retrieveProducerCropYield(String crop, ArrayList<Farm> yields)
+    private double retrieveProducerCropYield(String crop, ArrayList<Crop> yields)
             throws InvalidComparatorParamsException, BushelsConversionKeyNotFoundException {
-        for (Farm yield : yields) {
-            if (yield.getCrop().getType().equals(crop)) {
-                if (yield.getCrop().getUnits() == targetUnits) {
-                    return yield.getCrop().getYield();
+        for (Crop yield : yields) {
+            if (yield.getType().equals(crop)) {
+                if (yield.getUnits() == targetUnits) {
+                    return yield.getYield();
                 } else {
-                    return converter.convertYield(yield.getCrop().getYield(), crop, producerUnits, targetUnits);
+                    return converter.convertYield(yield.getYield(), crop, producerUnits, targetUnits);
                 }
             }
         }

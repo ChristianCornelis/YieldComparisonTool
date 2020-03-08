@@ -95,4 +95,21 @@ public abstract class PromptHelper {
                 ") - Compare producer yield data against Statistics Canada average yield data." +
                 "\n(" + QUIT + ") - Quit";
     }
+
+    /**
+     * Prompt for getting the name of a producer at import-time.
+     * @return the string to output.
+     */
+    public static String getProducerPrompt() {
+        return "Welcome to the Yield Comparison Tool!\nEnter the producer name you wish to use the application as:";
+    }
+
+    /**
+     * Prompt for welcoming back the user.
+     * @param producer the producer
+     * @return the string containing the prompt.
+     */
+    public String getWelcomeBackMsg(String producer) {
+        return "The previously-imported yields for producer '" + producer + "' have been re-loaded.";
+    }
 }
