@@ -4,6 +4,7 @@
 ## Running the tool
 - To run the tool, please run `gradle build` and then `gradle run`. If you are not running this via gradle in intellij,
 I would suggest running via `gradle run -q --console=plain` to reduce the overlay that gradle outputs.
+- I would HIGHLY reccomend you run this outside of intellij - if an output message containing `ERROR`, it can sometimes freeze the console.
 - Follow the on-screen instructions. Options are surrounded by parentheses.
     - Each option is selected by pressing the corresponding number. 
     - Some options are not implemented.
