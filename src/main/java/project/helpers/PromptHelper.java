@@ -18,7 +18,8 @@ public abstract class PromptHelper {
     public static final int IMPORT_BU_PER_AC = 2;
 
     public static final int CANCEL_TASK = 3;
-    public static final int QUIT = 4;
+    public static final int DELETE_PRODUCER_RECORD = 4;
+    public static final int QUIT = 5;
 
     /**
      * Builds a string representing the status of a given map.
@@ -93,6 +94,8 @@ public abstract class PromptHelper {
                 "\n(" + IMPORT_STATSCAN_CSV + ") - Import a Statistics Canada average yield CSV." +
                 "\n(" + COMPARE_PRODUCER_STATSCAN_YIELDS +
                 ") - Compare producer yield data against Statistics Canada average yield data." +
+                "\n(" + DELETE_PRODUCER_RECORD +
+                ") - Delete producer record(s)" +
                 "\n(" + QUIT + ") - Quit";
     }
 
@@ -119,5 +122,27 @@ public abstract class PromptHelper {
      */
     public String getStatsCanDataLoadedMsg() {
         return "The previously-imported yields from Statistics Canada have been re-loaded.";
+    }
+
+    /**
+     * Get prompt for producer deletion options.
+     * @return the string.
+     */
+    public String getProducerDeletionPrompt() {
+        return "Enter a valid option for producer record deletion below:\n" +
+                "\n(" + DeletionHandler.DELETE_ALL_RECORDS +
+                ") - Delete all records imported by the current producer." +
+                "\n(" + DeletionHandler.DELETE_RECORDS_BY_YEAR +
+                ") - Delete all records imported by the current producer in a specific year." +
+                "\n(" + DeletionHandler.DELETE_RECORDS_BY_RANGE +
+                ") - Delete all records imported by the current producer in a range of years.";
+    }
+
+    /**
+     * Get the prompt for selecting a year to delete records from.
+     * @return the string
+     */
+    public String getProducerDeletionByYearPrompt() {
+        return "Enter a year to delete all producer records from:";
     }
 }
