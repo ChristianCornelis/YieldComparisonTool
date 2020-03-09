@@ -17,11 +17,18 @@ public class ProducerCSVImporter extends CSVImporter {
      * @param filename the file to parse.
      * @param sourceUnits the source units for yield.
      * @param producerName the name of the producer.
+     * @param cache the cached yields.
      * @throws FileNotFoundException if the filename cannot be found.
      */
-    public ProducerCSVImporter(String filename, int sourceUnits, String producerName) throws FileNotFoundException {
+    public ProducerCSVImporter(String filename, int sourceUnits, String producerName,
+                               Map<Integer, ArrayList<Crop>> cache) throws FileNotFoundException {
         super(filename, sourceUnits);
-        yields = new HashMap<>();
+//        yields = new HashMap<>();
+        yields = cache;
+        if (cache != null)
+            yields = cache;
+        else
+            yields = new HashMap<>();
         producer = producerName;
     }
 
@@ -49,8 +56,14 @@ public class ProducerCSVImporter extends CSVImporter {
                 System.out.println(e.getMessage());
             }
             Farm toPut = new Farm(farmName, location, cropName, yield, super.getSourceUnits(), producer, year);
-            getDb().addNewProducerYield(toPut);
-            setYield(year, toPut);
+
+            //if the yield does not already exist in the cache locally
+            //this maintains low query counts to the db and resolves duplicate entries.
+            if (!exists(yields, toPut)) {
+                getDb().addNewProducerYield(toPut);
+                setYield(year, toPut);
+            }
+
         }
     }
 
