@@ -4,12 +4,21 @@
 ## Running the tool
 - To run the tool, please run `gradle build` and then `gradle run`. If you are not running this via gradle in intellij,
 I would suggest running via `gradle run -q --console=plain` to reduce the overlay that gradle outputs.
+- `gradle check` will lint the application.
 - I would HIGHLY reccomend you run this outside of intellij - if an output message containing `ERROR`, it can sometimes freeze the console.
 - Follow the on-screen instructions. Options are surrounded by parentheses.
     - Each option is selected by pressing the corresponding number. 
     - Some options are not implemented.
     - You will be prompted to enter a producer name when the application starts. The only reserved usernames are `admin` and `Admin`. This will result in no producer name being set if you do this.
 - Tests can be run with `gradle test`
+
+## Improvements Based on M1 Feedback
+- Implemented the ability to compare lower-case-specified crops!
+- Refactored the Driver class to better maintain single-responsibility.
+- Ensured that method names were all verbs
+- Ensured that instance variables had meaningful names
+- Added a glossary to this document to aid in the understanding of constant nomenclature
+- Organized source code into specific packages to make their uses clear.
 
 ### Importing Producer Data
 - When prompted for a **Producer** CSV to import (main menu choice 0), you must specify `src/main/resources/producer_lite.csv`, but keep in mind that the path is relative and may need to be different.
@@ -38,7 +47,7 @@ I would suggest running via `gradle run -q --console=plain` to reduce the overla
 - By logging in with "admin" or "Admin" you simply don't have the ability to import producer data. I was going to extend this so that producers couldn't import StatsCan data, but didn't have time.
 - No testing was done for if Firebase query quotes are exceeded, or if database connections fail!
 
-## Caching Behavior Database Limitations
+## Caching Behavior / Database Limitations
 - When the application starts up, it will attempt to fill the local caches. If the producer using the application has imported data before, then that imported data will be cached locally and will be
   immediately available for comparisons. Any Statistics Canada data that has previously been imported is also cached at startup.
 - With Firebase having only 50,000 read operations per day, I opted to implement caching behavior that would help save some queries. REALLLLLY lazy caching was attempted.

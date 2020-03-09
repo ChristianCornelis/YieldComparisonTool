@@ -5,6 +5,7 @@
 | Explanation | The name of the farm or field. | The location of the farm. | The crop grown. | The year the yield was recorded. | The yield. |
 | Example Row | "Gerard Cornelis Farms" | "Ailsa Craig, ON" | "Corn" | 2020 | 2000 |
 - See the sample file in `src/main/resources/producer_lite.csv` for additional clarification. There is essentially no error-checking, so ensure you adhere to the schema.
+- The producer name is stored alongside this data in both the cache and the remote database in order to aid in data encapsulation.
 
 # StatsCan CSV Schema
 | CSV Header| Type of crop | Year 1 | Year 2 | ... |
