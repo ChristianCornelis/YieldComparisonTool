@@ -6,7 +6,6 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import project.data.Crop;
-import project.data.Farm;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -48,7 +47,7 @@ public class StatsCanCSVImporterTest {
     @SuppressWarnings({"MissingJavadocMethod", "MethodName"})
     @Test
     public void testSetYield_NewKey() {
-        Crop testCrop = new Crop( "Corn", 10000, Crop.KG_PER_HA, 2020);
+        Crop testCrop = new Crop("Corn", 10000, Crop.KG_PER_HA, 2020);
         testImporter.setYield(2000, testCrop);
         assertEquals(testImporter.getYields().get(2000).get(0), testCrop);
     }
@@ -56,7 +55,7 @@ public class StatsCanCSVImporterTest {
     @SuppressWarnings({"MissingJavadocMethod", "MethodName"})
     @Test
     public void testSetYield_Present() {
-        Crop testCrop = new Crop( "Corn", 10000, Crop.KG_PER_HA, 2020);
+        Crop testCrop = new Crop("Corn", 10000, Crop.KG_PER_HA, 2020);
         testImporter.setYield(1, testCrop);
         assertEquals(testImporter.getYields().get(1).get(0), testCrop);
     }
@@ -70,7 +69,7 @@ public class StatsCanCSVImporterTest {
     @SuppressWarnings({"MissingJavadocMethod", "MethodName"})
     @Test
     public void testExists_FarmInCache() {
-        Crop testCrop = new Crop( "Corn", 10000, Crop.KG_PER_HA, 2020);
+        Crop testCrop = new Crop("Corn", 10000, Crop.KG_PER_HA, 2020);
         testImporter.setYield(1, testCrop);
         assertEquals(testImporter.exists(testImporter.getYields(), testCrop), true);
     }
@@ -78,7 +77,7 @@ public class StatsCanCSVImporterTest {
     @SuppressWarnings({"MissingJavadocMethod", "MethodName"})
     @Test
     public void testExists_FarmNotInCache() {
-        Crop testCrop = new Crop( "Corn", 10000, Crop.KG_PER_HA, 2020);
+        Crop testCrop = new Crop("Corn", 10000, Crop.KG_PER_HA, 2020);
         assertEquals(testImporter.exists(testImporter.getYields(), testCrop), false);
     }
 
