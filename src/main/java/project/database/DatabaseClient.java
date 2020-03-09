@@ -13,6 +13,7 @@ import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 
 import project.Exceptions;
+import project.converters.Converter;
 import project.data.Crop;
 import project.data.Farm;
 
@@ -97,11 +98,12 @@ public class DatabaseClient implements StatsCanDatabase, ProducerDatabase, Yield
     public void addNewYield(CollectionReference colRef, Crop yield)
             throws Exceptions.DatabaseWriteException {
         try {
+            yield = validateYieldUnits(yield);  //convert units to metric
             Map<String, Object> data = yield.toMap();
             ApiFuture<DocumentReference> addedDocRef = colRef.add(data);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            throw new Exceptions.DatabaseWriteException("ERROR Failed to write record to database.");
+            throw new Exceptions.DatabaseWriteException("ERROR Failed to write record to database.\n" + yield.toString());
 
         }
     }
@@ -197,6 +199,27 @@ public class DatabaseClient implements StatsCanDatabase, ProducerDatabase, Yield
         }
     }
 
+    /**
+     * Method to validate the yield units. Yield units are only stored in metric values in the database.
+     * @param toPut the crop about to be written to the db.
+     * @return the crop, with yields in metric units.
+     * @throws Exceptions.BushelsConversionKeyNotFoundException if a conversion from bu/ac cannot be performed.
+     */
+    public Crop validateYieldUnits(Crop toPut) throws Exceptions.BushelsConversionKeyNotFoundException {
+        if (toPut.getUnits() != Crop.KG_PER_HA) {
+            Converter c = new Converter();
+            switch (toPut.getUnits()) {
+                case Crop.LBS_PER_AC:
+                    toPut.setYield(c.lbsPerAcToKgPerHa(toPut.getYield()));
+                    break;
+                case Crop.BU_PER_AC:
+                    toPut.setYield(c.buPerAcToKgPerHa(toPut.getYield(), toPut.getType()));
+                    break;
+            }
+            toPut.setUnits(Crop.KG_PER_HA);
+        }
+        return toPut;
+    }
 }
 
 
