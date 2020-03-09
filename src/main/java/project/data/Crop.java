@@ -108,6 +108,7 @@ public class Crop {
                 + "units=" + units
                 + ", type='" + type + '\''
                 + ", yield=" + yield
+                + ", year=" + year
                 + '}';
     }
 

@@ -4,6 +4,7 @@
 ## Running the tool
 - To run the tool, please run `gradle build` and then `gradle run`. If you are not running this via gradle in intellij,
 I would suggest running via `gradle run -q --console=plain` to reduce the overlay that gradle outputs.
+- I would HIGHLY reccomend you run this outside of intellij - if an output message containing `ERROR`, it can sometimes freeze the console.
 - Follow the on-screen instructions. Options are surrounded by parentheses.
     - Each option is selected by pressing the corresponding number. 
     - Some options are not implemented.
@@ -11,23 +12,31 @@ I would suggest running via `gradle run -q --console=plain` to reduce the overla
 - Tests can be run with `gradle test`
 
 ### Importing Producer Data
-- When prompted for a **Producer** CSV to import (main menu choice 0), you must specify `src/main/resources/gjc_farms_2013_to_2019_bushels.csv`, but keep in mind that the path is relative and may need to be different.
+- When prompted for a **Producer** CSV to import (main menu choice 0), you must specify `src/main/resources/producer_lite.csv`, but keep in mind that the path is relative and may need to be different.
     - This CSVs units are **BUSHELS PER ACRE**, or menu choice **2** when prompted for units.
     
 ### Importing Statistics Canada Data
-- When prompted for a **Statistics Canada (StatsCan)** CSV to import (main menu choice 1), you must specify `src/main/resources/statscan_yields_metric_1999_to_2019.csv`, but again, the path is relative.
+- When prompted for a **Statistics Canada (StatsCan)** CSV to import (main menu choice 1), you must specify `src/main/resources/statscan_lite.csv`, but again, the path is relative.
     - This CSV's units are **KILOGRAMS PER HECTARE**, or menu choice **0** when prompted for units.
     - Some of the yields from StatsCan were left as improperly-formatted values. These will result in error messages when importing and are expected.
 
 ### Comparing Yields
 - Some funky logic is at play with the yield comparator due to the way StatsCan names their crops, and how they're usually referred to. This will be refactored later on.
-    - In the meantime, I would suggest using any year from 2013-2019 to compare Soybeans.
-- Comparing yields in Bushels per acre is not supported at the moment. (It's not a fun conversion for hay and silage).
+    - In the meantime, I would suggest using any year from 2018-2019 to compare Soybeans.
+- Comparing yields in Bushels per acre is not supported at the moment. (It's not a fun conversion for hay and silage). **Update** -  It's looking like this might be forever-deprecated. If it is selected it will make you choose again until another option is chosen.
     - Currently comparisons are being made on the first match of a crop that was grown by a producer in the given year.
-        - This will be refactored to account for farmers who grow multiple fields of the same crop annually, but for now, proves that the functionality is working correctly.
-        - Comparisons can also only be done on crops with names that are one word, like 'Barley', 'Soybeans', or 'Oats'. This will be fixed later.
+        - Comparisons on crops with names that are more than one word long are now supported, but it a super gross way - spaces must be replaced with underscores. So "Corn for grain" would be replaced with "Corn_for_grain".
+            - This is due to some wonky scanner behavior when trying to parse more than one string at a time, but it won't matter once this is done via a web interface :)
 - The status of what data is loaded into the application is input above the menu.
-- Minimal error checking was done on importing data in incorrect formats. I would suggest adhering to the above guidelines :D
+- Assume no error checking was done on importing data in incorrect formats. I would suggest adhering to the above guidelines :D Also, see SCHEMA.md for data schemas.
+- Lowercase crop names should work for comparisons now!
+- Tested crops include Faba beans (with "faba_beans") Corn (with "corn_for_grain" - again, StatsCan naming conventions make it hard), and soybeans.
+
+### Current State of the Application
+- The App (unless people play around with it during review - pls no) will be populated with producer and Statistics Canada data for 2018 and 2019.
+    - Producer data will be input by the Producer "Tester", so if you want to have that data pre-loaded you MUST enter that as the producer name at login.
+- By logging in with "admin" or "Admin" you simply don't have the ability to import producer data. I was going to extend this so that producers couldn't import StatsCan data, but didn't have time.
+- No testing was done for if Firebase query quotes are exceeded, or if database connections fail!
 
 ## Caching Behavior Database Limitations
 - When the application starts up, it will attempt to fill the local caches. If the producer using the application has imported data before, then that imported data will be cached locally and will be
@@ -35,7 +44,9 @@ I would suggest running via `gradle run -q --console=plain` to reduce the overla
 - With Firebase having only 50,000 read operations per day, I opted to implement caching behavior that would help save some queries. REALLLLLY lazy caching was attempted.
 - When importing data, if the local cache (be it StatsCan or producer), will check if the record exists for the given year. If it DOES, then the record is NOT overwritten - local caches and the database are left untouched.
     - Note that this "exists" check is done on the FULL record being imported - if the yield is slightly different it will be overwritten.
-- Note that because the database is limited to 50,000 reads/day, no large datasets are included in this submission. If you're gonna play around with the application, be mindful of this pls :)
+- Note that because the database is limited to 50,000 reads/day, smaller datasets have been pre-loaded into the state. If you're gonna play around with the application, be mindful of this pls :)
+- Note that when you attempt to delete producer records the producer cache is invalidated. Keep this in mind, as it will entail a complete re-load of the state, and 100s of read operations!
+- For usage perspective I was able to burn through about 3000 read operations in 15 minutes of intense testing using the `lite` CSVs.
 
 ## Glossary of Terms and Constants
 - Yields, weights, and areas must be converted in order for comparisons to be done in either metric or imperial units.
@@ -73,23 +84,25 @@ I would suggest running via `gradle run -q --console=plain` to reduce the overla
 - I attempted to adhere to this principle with my data classes - Crop and Farm. By refactoring Farm to extend Crop, I was able to utilize this principle by defining methods usable with both object
   types. This sped up implementation, reduced code bloat, and removed duplicate code in some cases.
 - `project.database.DatabaseClient.convertRecordsToMap` is a good example of this (albeit some weird casting had to be done - thanks checkstyle).
+- Another example of when this principle was utilized is in `project.comparators.YieldComparator.retrieveYield`, which is used for both StatsCan and Producer data.
 
 ### Interface Segregation
 - This principle made me really think about my class implementation when approaching this deliverable - especially in the case of my DatabaseClient class. As this class entailed much of the functionality introduced
 in this deliverable, it is where I focused most on this principle. Instead of having multiple sub-classes that performed small tasks related to producer and statscan data operations, I opted to make the single
 DatabaseClient class that implemented multiple interfaces. Becauase of the design of the interfaces, the ability to spin off multiple sub-clients is readily available if the need were to arise.
-- 
+-`project.database` contains some examples of interface segregation, as well as `project.importers`.
 
 ### Class Length
 - Class length was a tricky problem to tackle this milestone. With the implementation of my Driver class and the way it was structured, I had to really think about how to break it up without introducing a 
 whole bunch of unnecessary complexity.
-- I opted to introduce the `project.helpers` package, which contains helper methods and handlers for input, record deletion, caching, comparing yields, and importing.
+- I opted to introduce the `project.helpers` package, which contains helper methods and handlers for input, record deletion, comparing yields, and importing.
 - In this way, the core functionality of the project lives outside of the helpers package, which will become deprecated once a web app is put in front of this project.
 
 ### Unit Tests
 - Unit tests were completed on concrete classes that did not handle user input, database operations, or file parsing. I realize that this may not quite be 50% code coverage, but
 I'll be honest - I didn't want to mock out database connections, CSV importers libraries, and standard input.
-- All tests live in the TODO package, which has a structure that mirrors that of the main project package.
+- All tests live in the `src/test/java/project` package, which has a structure that mirrors that of the main project package (for fleshed-out tests).
+- A stage was added to the CI to run the tests.
 
 # M1 Documentation
 ## M1 User Stories
@@ -136,4 +149,8 @@ enforce the fact that producers should not be capable of seeing or using other p
  the Crop class and PromptHelper class (as they can be accessed directly), and the Producer yield maps found inn the YieldComparator and YieldComparisonToolDriver.
  - I attempted to abstract my class definitions as much as possible by defining interfaces that were then used by classes. This reinforced extendability while maintaining specific implementation
  details at the lowest level possible.
+ 
+ ## References
+ - The Google Cloud Firestore docs were of huge help during this milestone: https://firebase.google.com/docs/firestore
+    - used this documentation for querying the database for storage, retrieval, and deletion, as well as hooking up to Firebase from my application
 

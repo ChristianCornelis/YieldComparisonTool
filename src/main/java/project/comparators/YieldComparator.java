@@ -16,8 +16,6 @@ import project.data.Farm;
  */
 public class YieldComparator implements Comparator {
     private Converter converter;
-    private int producerUnits;
-    private int statsCanUnits;
     private int targetUnits;
     private Map<Integer, ArrayList<Crop>> producerYields;
     private Map<Integer, ArrayList<Crop>> statsCanYields;
@@ -101,6 +99,7 @@ public class YieldComparator implements Comparator {
         }
         return unitStr;
     }
+
     /**
      * Method to format a yield comparison output string.
      * @param diff the difference in yield
@@ -127,10 +126,13 @@ public class YieldComparator implements Comparator {
     private double retrieveYield(String crop, ArrayList<Crop> yields)
             throws InvalidComparatorParamsException, BushelsConversionKeyNotFoundException {
         Boolean isProd = false;
+        if (yields == null) {
+            throw new InvalidComparatorParamsException("Desired year not in both caches!");
+        }
         for (Crop yield : yields) {
             if (yield instanceof Farm)
                 isProd = true;
-            if (yield.getType().equals(crop)) {
+            if (yield.getType().toLowerCase().equals(crop.toLowerCase())) {
                 if (yield.getUnits() == targetUnits) {
                     return yield.getYield();
                 } else {
@@ -160,21 +162,6 @@ public class YieldComparator implements Comparator {
         return converter;
     }
 
-    /**
-     * Get the units the producer yields are in.
-     * @return the producer yields unit.
-     */
-    public int getProducerUnits() {
-        return producerUnits;
-    }
-
-    /**
-     * Get the units the StatsCan yields are in.
-     * @return the statscan yield units.
-     */
-    public int getStatsCanUnits() {
-        return statsCanUnits;
-    }
 
     /**
      * get the targetted units for comparison.
@@ -211,13 +198,6 @@ public class YieldComparator implements Comparator {
         this.statsCanYields = statsCanYields;
     }
 
-    /**
-     * Update the StatsCan units in use.
-     * @param statsCanUnits the new statsCanUnits
-     */
-    public void setStatsCanUnits(int statsCanUnits) {
-        this.statsCanUnits = statsCanUnits;
-    }
     /**
      * Update the converter in use.
      * @param converter the new converter.
