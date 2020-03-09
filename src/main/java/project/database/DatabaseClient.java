@@ -58,7 +58,7 @@ public class DatabaseClient implements StatsCanDatabase, ProducerDatabase, Yield
             }
         } catch (IOException e) {
             System.out.println("ERROR Invalid Firebase Service account credentials.");
-            System.err.println(e);
+            System.out.println(e);
             System.exit(1);
         }
     }

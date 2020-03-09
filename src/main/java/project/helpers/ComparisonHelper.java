@@ -63,7 +63,7 @@ public class ComparisonHelper {
      */
     private String getCrop() {
         System.out.println(inputHandler.getCropPrompt());
-        return inputHandler.getBasicInput();
+        return inputHandler.getBasicInput().replace("_", " ");
     }
 
     /**

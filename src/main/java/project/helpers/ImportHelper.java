@@ -83,7 +83,7 @@ public class ImportHelper {
     private void importProducerCSV(int sourceUnits, String fileLocation) {
         setYieldUnits(sourceUnits);
         try {
-            ProducerCSVImporter pci = new ProducerCSVImporter(fileLocation, sourceUnits, producer, getStatsCanCache());
+            ProducerCSVImporter pci = new ProducerCSVImporter(fileLocation, sourceUnits, producer, getProducerCache());
             pci.parse();
             //set the yields to the merged return value - the cache is now updated!
             setYields(pci.getYields());
@@ -104,7 +104,7 @@ public class ImportHelper {
     private void importStatsCanCSV(int sourceUnits, String fileLocation) {
         setYieldUnits(sourceUnits);
         try {
-            StatsCanCSVImporter sci = new StatsCanCSVImporter(fileLocation, sourceUnits, getProducerCache());
+            StatsCanCSVImporter sci = new StatsCanCSVImporter(fileLocation, sourceUnits, getStatsCanCache());
             sci.parse();
             setYields(sci.getYields());
 //            setStatsCanYields(mergeMaps(sci.getYields(), getStatsCanYields()));
