@@ -9,13 +9,14 @@ import java.util.Map;
 import java.io.IOException;
 import com.opencsv.CSVReader;
 import project.Exceptions.YieldInvalidException;
+import project.data.Crop;
 import project.database.DatabaseClient;
 
 /**
  * Abstract class containing methods that an importer should contain for both
  * StatsCan and producer data importing.
  */
-public abstract class CSVImporter implements Importer {
+public abstract class CSVImporter implements Importer, CacheHelper {
     private CSVReader csvReader;
     private Map<Integer, ArrayList<Object>> yields;
     private int sourceUnits;
@@ -85,6 +86,23 @@ public abstract class CSVImporter implements Importer {
         return tokens;
     }
 
+    /**
+     * Method to check caches for records that already exist.
+     * @param cache the cache to check the record for
+     * @param record the record to check for.
+     * @return True if the record exists, false otherwise.
+     */
+    @Override
+    public boolean exists(Map<Integer, ArrayList<Crop>> cache, Crop record) {
+        for (Integer i : cache.keySet()) {
+            for (Crop c : cache.get(i)) {
+                if (record.equals(c)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     /**
      * Getter for source units.

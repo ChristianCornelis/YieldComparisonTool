@@ -1,6 +1,7 @@
 package project.data;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class Farm extends Crop {
     private String producer;
@@ -104,5 +105,30 @@ public class Farm extends Crop {
         map.put("producer", producer);
 
         return map;
+    }
+
+    /**
+     * Equals method to check for equality between objects.
+     * @param o object to compare.
+     * @return true if the objects contain the same info, false otherwise.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Farm)) return false;
+        if (!super.equals(o)) return false;
+        Farm farm = (Farm) o;
+        return getProducer().equals(farm.getProducer()) &&
+                getName().equals(farm.getName()) &&
+                getLocation().equals(farm.getLocation());
+    }
+
+    /**
+     * Method to get the has values for the instance variables.
+     * @return hashcode.
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getProducer(), getName(), getLocation());
     }
 }

@@ -18,11 +18,16 @@ public class StatsCanCSVImporter extends CSVImporter {
      * Constructor with filename, target units, and source units.
      * @param filename The file to read from.
      * @param sourceUnits The source units (kg/ha, lbs/ac, etc..).
+    *  @param cache the cached yields.
      * @throws FileNotFoundException if the filename cannot be found.
      */
-    public StatsCanCSVImporter(String filename, int sourceUnits) throws FileNotFoundException {
+    public StatsCanCSVImporter(String filename, int sourceUnits, Map<Integer,
+            ArrayList<Crop>> cache) throws FileNotFoundException {
         super(filename, sourceUnits);
-        yields = new HashMap<>();
+        if (cache != null)
+            yields = cache;
+        else
+            yields = new HashMap<>();
     }
 
     /**
@@ -60,8 +65,12 @@ public class StatsCanCSVImporter extends CSVImporter {
                     continue;
                 }
                 Crop toPut = new Crop(cropName, yield, super.getSourceUnits(), year);
-                getDb().addNewStatsCanYield(toPut);
-                setYield(year, toPut);
+
+                if (!exists(yields, toPut)) {
+                    getDb().addNewStatsCanYield(toPut);
+                    setYield(year, toPut);
+                }
+
                 tokenCnt++;
             }
         }

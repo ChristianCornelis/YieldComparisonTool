@@ -2,6 +2,7 @@ package project.data;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Crop {
     public static final int KG_PER_HA = 0;
@@ -121,5 +122,30 @@ public class Crop {
         map.put("units", units);
         map.put("year", year);
         return map;
+    }
+
+    /**
+     * Equals method to check for equality between objects.
+     * @param o object to compare.
+     * @return true if the objects contain the same info, false otherwise.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Crop)) return false;
+        Crop crop = (Crop) o;
+        return getUnits() == crop.getUnits() &&
+                Double.compare(crop.getYield(), getYield()) == 0 &&
+                getYear() == crop.getYear() &&
+                getType().equals(crop.getType());
+    }
+
+    /**
+     * Method to get the has values for the instance variables.
+     * @return hashcode.
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUnits(), getType(), getYield(), getYear());
     }
 }

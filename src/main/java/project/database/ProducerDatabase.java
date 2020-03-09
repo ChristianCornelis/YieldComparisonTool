@@ -1,5 +1,6 @@
 package project.database;
 
+import project.Exceptions;
 import project.data.Crop;
 
 import java.util.ArrayList;
@@ -22,4 +23,14 @@ public interface ProducerDatabase {
      * @return map of all yields for the given producer.
      */
     Map<Integer, ArrayList<Crop>> retrieveProducerYields(String producer);
+
+    /**
+     * Remove a record matching the year and producer specified.
+     * @param year the year
+     * @param producer the producer name
+     * @throws project.Exceptions.DatabaseDeletionException if failed.
+     * @throws Exceptions.NoDatabaseRecordsRemovedException if no records deleted.
+     */
+    void removeYieldByYearAndProducer(int year, String producer)
+            throws Exceptions.DatabaseDeletionException, Exceptions.NoDatabaseRecordsRemovedException;
 }

@@ -1,4 +1,4 @@
-package project;
+package project.helpers;
 
 import java.util.ArrayList;
 import java.util.Map;

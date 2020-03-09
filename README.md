@@ -6,14 +6,18 @@
 I would suggest running via `gradle run -q --console=plain` to reduce the overlay that gradle outputs.
 - Follow the on-screen instructions. Options are surrounded by parentheses.
     - Each option is selected by pressing the corresponding number. 
+    - Some options are not implemented.
+    - You will be prompted to enter a producer name when the application starts. The only reserved usernames are `admin` and `Admin`. This will result in no producer name being set if you do this.
+- Tests can be run with `gradle test`
+
 ### Importing Producer Data
 - When prompted for a **Producer** CSV to import (main menu choice 0), you must specify `src/main/resources/gjc_farms_2013_to_2019_bushels.csv`, but keep in mind that the path is relative and may need to be different.
     - This CSVs units are **BUSHELS PER ACRE**, or menu choice **2** when prompted for units.
-- Some of the yields from StatsCan were left as improperly-formatted values. These will result in error messages when importing and are expected.
     
 ### Importing Statistics Canada Data
 - When prompted for a **Statistics Canada (StatsCan)** CSV to import (main menu choice 1), you must specify `src/main/resources/statscan_yields_metric_1999_to_2019.csv`, but again, the path is relative.
     - This CSV's units are **KILOGRAMS PER HECTARE**, or menu choice **0** when prompted for units.
+    - Some of the yields from StatsCan were left as improperly-formatted values. These will result in error messages when importing and are expected.
 
 ### Comparing Yields
 - Some funky logic is at play with the yield comparator due to the way StatsCan names their crops, and how they're usually referred to. This will be refactored later on.
@@ -25,9 +29,17 @@ I would suggest running via `gradle run -q --console=plain` to reduce the overla
 - The status of what data is loaded into the application is input above the menu.
 - Minimal error checking was done on importing data in incorrect formats. I would suggest adhering to the above guidelines :D
 
+## Caching Behavior Database Limitations
+- When the application starts up, it will attempt to fill the local caches. If the producer using the application has imported data before, then that imported data will be cached locally and will be
+  immediately available for comparisons. Any Statistics Canada data that has previously been imported is also cached at startup.
+- With Firebase having only 50,000 read operations per day, I opted to implement caching behavior that would help save some queries. REALLLLLY lazy caching was attempted.
+- When importing data, if the local cache (be it StatsCan or producer), will check if the record exists for the given year. If it DOES, then the record is NOT overwritten - local caches and the database are left untouched.
+    - Note that this "exists" check is done on the FULL record being imported - if the yield is slightly different it will be overwritten.
+- Note that because the database is limited to 50,000 reads/day, no large datasets are included in this submission. If you're gonna play around with the application, be mindful of this pls :)
+
 ## Glossary of Terms and Constants
 - Yields, weights, and areas must be converted in order for comparisons to be done in either metric or imperial units.
-  This section aims to explain some of these units and conversions. Constants can be found in src/main/java/project/Converter.java
+- This section aims to explain some of these units and conversions. Constants can be found in `src/main/java/project/Converter.java`
 
 | Term | Explanation |
 | ---- | --------- |
@@ -37,21 +49,47 @@ I would suggest running via `gradle run -q --console=plain` to reduce the overla
 
 | Constant | Explanation |
 | -------- | --------- |
-| KGS_PER_HA_TO_LBS_PER_AC_FACTOR | The factor used to convert yields between the metric units, kilograms per hectare, to the imperial units pounds per acre. |
-| LBS_PER_AC_TO_KG_PER_HA_FACTOR | The factor used to convert yields between the imperial units, pounds per acre, to the metric units, kilograms per acre.|
-| KGS_TO_LBS_FACTOR | The factor to convert weights from kilograms (metric) to pounds (imperial). |
-| LBS_TO_KGS_FACTOR | The factor to convert weights from pounds (imperial) to kilograms (metric). |
-| HA_TO_AC_FACTOR | The factor to convert areas measured in hectares (metric) to acres (imperial). |
-| AC_TO_HA_FACTOR | The factor to convert areas measured in acres (imperial) to hectares (metric). |
+| `KGS_PER_HA_TO_LBS_PER_AC_FACTOR` | The factor used to convert yields between the metric units, kilograms per hectare, to the imperial units pounds per acre. |
+| `LBS_PER_AC_TO_KG_PER_HA_FACTOR` | The factor used to convert yields between the imperial units, pounds per acre, to the metric units, kilograms per acre.|
+| `KGS_TO_LBS_FACTOR` | The factor to convert weights from kilograms (metric) to pounds (imperial). |
+| `LBS_TO_KGS_FACTOR` | The factor to convert weights from pounds (imperial) to kilograms (metric). |
+| `HA_TO_AC_FACTOR` | The factor to convert areas measured in hectares (metric) to acres (imperial). |
+| `AC_TO_HA_FACTOR` | The factor to convert areas measured in acres (imperial) to hectares (metric). |
 
 # M2 Documentation
 ## M2 User Stories
 - As a producer, I want to be able to import my production data once and have it stored between application uses so I do not have to import data every time the app is used.
     - Given that I have imported a CSV file successfully, when I quit the application, and re-open it my data is stored for use at a later time.
     - Given that I have not imported a CSV file successfully, when I quit the application and re-open it, no producer data is populated in the application.
+- As a producer, I want to be able to delete all imported records from a given year.
+    - Given that I have imported a CSV file successfully, when I specify a year to delete records from, all yields are removed from the application for that year.
+    - Given that I have not imported a CSV file successfully, when I specify a year to delete records from, nothing happens.
 - As an administrator, I want to be able to import StatsCan data once and have it stored between application uses so I do not have to import data every time the app is used.
     - Given that I have imported a CSV file successfully, when I quit the application, and re-open it my data is stored for use at a later time.
     - Given that I have not imported a CSV file successfully, when I quit the application and re-open it, no producer data is populated in the application.
+    
+## Analysis of Implementation
+### Liskov Substitution Principle
+- I attempted to adhere to this principle with my data classes - Crop and Farm. By refactoring Farm to extend Crop, I was able to utilize this principle by defining methods usable with both object
+  types. This sped up implementation, reduced code bloat, and removed duplicate code in some cases.
+- `project.database.DatabaseClient.convertRecordsToMap` is a good example of this (albeit some weird casting had to be done - thanks checkstyle).
+
+### Interface Segregation
+- This principle made me really think about my class implementation when approaching this deliverable - especially in the case of my DatabaseClient class. As this class entailed much of the functionality introduced
+in this deliverable, it is where I focused most on this principle. Instead of having multiple sub-classes that performed small tasks related to producer and statscan data operations, I opted to make the single
+DatabaseClient class that implemented multiple interfaces. Becauase of the design of the interfaces, the ability to spin off multiple sub-clients is readily available if the need were to arise.
+- 
+
+### Class Length
+- Class length was a tricky problem to tackle this milestone. With the implementation of my Driver class and the way it was structured, I had to really think about how to break it up without introducing a 
+whole bunch of unnecessary complexity.
+- I opted to introduce the `project.helpers` package, which contains helper methods and handlers for input, record deletion, caching, comparing yields, and importing.
+- In this way, the core functionality of the project lives outside of the helpers package, which will become deprecated once a web app is put in front of this project.
+
+### Unit Tests
+- Unit tests were completed on concrete classes that did not handle user input, database operations, or file parsing. I realize that this may not quite be 50% code coverage, but
+I'll be honest - I didn't want to mock out database connections, CSV importers libraries, and standard input.
+- All tests live in the TODO package, which has a structure that mirrors that of the main project package.
 
 # M1 Documentation
 ## M1 User Stories
@@ -89,9 +127,8 @@ where some side effects, such as IO, are in place; however, I decided to keep th
 - By breaking down the implementation of the Importer into an interface, abstract class, and sub-classes (that were concrete classes) I was able to extract a lot of "business logic" into subclasses
 to avoid breaking this principle.
 - The converter class is a good example of Single Responsibility. Each method has one specific task, which may or may not rely on other methods in order to perform said task.
-- 
 
-### Open-Close Principle
+### Open-Closed Principle
 - This principle was quite challenging to adhere to considering the data I was dealing with. I attempted to keep producer data encapsulated in the current state of the application to
 enforce the fact that producers should not be capable of seeing or using other producers' data.
 - Keeping the above in mind, I provided getters and setters for the vast majority of instance variables defined in my classes to make them as extendable as possible.

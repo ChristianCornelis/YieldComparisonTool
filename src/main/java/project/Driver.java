@@ -1,16 +1,13 @@
 package project;
 
-import project.comparators.YieldComparator;
 import project.data.Crop;
 import project.database.DatabaseClient;
-import project.importers.ProducerCSVImporter;
-import project.importers.StatsCanCSVImporter;
+import project.helpers.*;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Map;
 
-import static project.PromptHelper.*;
+import static project.helpers.PromptHelper.*;
 
 /**
  * Temporary driver class for the entire project.
@@ -57,112 +54,13 @@ public class Driver {
         setStatsCanYields(statsCanYields);
     }
 
-    /**
-     * Imports a file based on an action specified.
-     * @param action the action specified based on static constants declared in this class.
-     */
-    public void importFile(int action) {
-        int[] validImportActions = {IMPORT_KG_PER_HA, IMPORT_LB_PER_AC, IMPORT_BU_PER_AC, CANCEL_TASK};
-        int importUnits = inputHandler.chooseAction(
-                inputHandler.getUnitsPrompt("Choose the units the yields are in:\n"),
-                validImportActions);
-        if (importUnits != CANCEL_TASK) {
-            System.out.println(inputHandler.getFileLocationPrompt());
-            String fileLocation = inputHandler.getBasicInput();
-
-            int sourceUnits = -1;
-            switch (importUnits) {
-                case IMPORT_KG_PER_HA:
-                    sourceUnits = Crop.KG_PER_HA;
-                    break;
-                case IMPORT_LB_PER_AC:
-                    sourceUnits = Crop.LBS_PER_AC;
-                    break;
-                case IMPORT_BU_PER_AC:
-                    sourceUnits = Crop.BU_PER_AC;
-                    break;
-            }
-            if (action == IMPORT_PRODUCER_CSV) {
-                importProducerCSV(sourceUnits, fileLocation);
-            } else {
-                importStatsCanCSV(sourceUnits, fileLocation);
-            }
-        }
-    }
 
     /**
-     * Helper to get the units to be used for comparing crops.
-     * @return the constant representing the unit
+     * Helper to get the producer name.
      */
-    private int getComparisonUnits() {
-        //Todo: Implement comparison in Bu/ac
-        int[] validComparisonActions = {IMPORT_KG_PER_HA, IMPORT_LB_PER_AC, /*IMPORT_BU_PER_AC,*/ CANCEL_TASK};
-        return inputHandler.chooseAction(
-                inputHandler.getUnitsPrompt("Choose the units you wish to see yield differences in:\n"),
-                validComparisonActions
-        );
-    }
-
-    /**
-     * Helper to get the year for comparison.
-     * @param yearsIntersection the intersection of all years available for comparing producer and statscan datasets
-     * @return the year chosen by the user
-     */
-    private int getYear(ArrayList<Integer> yearsIntersection) {
-        return  inputHandler.chooseAction(
-                inputHandler.getYearsPrompt(),
-                yearsIntersection,
-                inputHandler.getInvalidYearPrompt(yearsIntersection));
-    }
-
-    /**
-     * Helper to get the crop for comparison.
-     * @return the crop name that is to be compared.
-     */
-    private String getCrop() {
-        System.out.println(inputHandler.getCropPrompt());
-        return inputHandler.getBasicInput();
-    }
-
     private void getProducer() {
         System.out.println(PromptHelper.getProducerPrompt());
         setProducer(inputHandler.getBasicInput());
-    }
-    /**
-     * Method to compare yields.
-     */
-    public void compareYields() {
-        if (producerYields == null || statsCanYields == null) {
-            System.out.println("Cannot perform comparison.");
-            return;
-        }
-        //Todo: Implement comparison in Bu/ac
-        int comparisonUnits = getComparisonUnits();
-        if (comparisonUnits == CANCEL_TASK) {
-            return;
-        }
-        YieldComparator yc = new YieldComparator(
-                producerYieldsUnits, statsCanYieldsUnits, comparisonUnits, producerYields,  statsCanYields
-        );
-        ArrayList<Integer> yearsIntersection = yc.keyIntersection(
-                producerYields.keySet(),
-                statsCanYields.keySet()
-        );
-        int year = getYear(yearsIntersection);
-        String crop = getCrop();
-        double diff = 0;
-        try {
-            diff = yc.compareCropsByYear(crop, year);
-        } catch (Exceptions.InvalidComparatorParamsException e) {
-            System.out.println(e.getMessage());
-            return;
-        } catch (Exceptions.BushelsConversionKeyNotFoundException e) {
-            System.out.println(e.getMessage());
-            return;
-        }
-        String unitStr = yc.formatUnitsString(comparisonUnits);
-        System.out.println(yc.formatComparison(diff, crop, year, unitStr));
-        return;
     }
 
     /**
@@ -172,12 +70,22 @@ public class Driver {
         int action = -1;
         while (action != QUIT) {
             System.out.println(inputHandler.getYieldsStatus(producerYields, statsCanYields));
-            int[] validActions = {IMPORT_PRODUCER_CSV, IMPORT_STATSCAN_CSV, COMPARE_PRODUCER_STATSCAN_YIELDS, QUIT};
+            int[] validActions = {
+                    IMPORT_PRODUCER_CSV, IMPORT_STATSCAN_CSV,
+                    COMPARE_PRODUCER_STATSCAN_YIELDS,
+                    DELETE_PRODUCER_RECORD, QUIT
+            };
             action = inputHandler.chooseAction(inputHandler.getActionPrompt(), validActions);
             if (action == IMPORT_PRODUCER_CSV || action == IMPORT_STATSCAN_CSV) {
                 importFile(action);
             } else if (action == COMPARE_PRODUCER_STATSCAN_YIELDS) {
-                compareYields();
+                ComparisonHelper ch = new ComparisonHelper(inputHandler, statsCanYields, producerYields);
+                ch.compareYields();
+            } else if (action == DELETE_PRODUCER_RECORD) {
+                DeletionHandler dh = new DeletionHandler(producer, inputHandler, dc);
+                dh.deleteProducerRecord();
+                //reset cache
+                loadPreviousProducerData();
             }
         }
 
@@ -185,39 +93,23 @@ public class Driver {
     }
 
     /**
-     * Helper to call on Producer data importer.
-     * @param sourceUnits the units the source data is in
-     * @param fileLocation the location of the CSV to be imported
+     * Method to handle caching logic for importing data.
+     * @param action the import action.
      */
-    private void importProducerCSV(int sourceUnits, String fileLocation) {
-        setProducerYieldsUnits(sourceUnits);
-        try {
-            ProducerCSVImporter pci = new ProducerCSVImporter(fileLocation, sourceUnits, producer);
-            pci.parse();
-            setProducerYields(pci.getYields());
-            System.out.println(inputHandler.outputMapStatus("Producer yields", true));
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
-            System.out.println(inputHandler.outputMapStatus("Producer yields", false));
+    private void importFile(int action) {
+        ImportHelper ih = new ImportHelper(inputHandler, producer, statsCanYields, producerYields);
+        ih.importFile(action);
+        switch (action) {
+            case IMPORT_PRODUCER_CSV:
+                setProducerYields(ih.getYields());
+                setProducerYieldsUnits(ih.getYieldUnits());
+                break;
+            case IMPORT_STATSCAN_CSV:
+                setStatsCanYields(ih.getYields());
+                setStatsCanYieldsUnits(ih.getYieldUnits());
+                break;
         }
-    }
-
-    /**
-     * Helper to call on StatsCan data importer.
-     * @param sourceUnits the units the source data is in
-     * @param fileLocation the location of the CSV to be imported
-     */
-    private void importStatsCanCSV(int sourceUnits, String fileLocation) {
-        setStatsCanYieldsUnits(sourceUnits);
-        try {
-            StatsCanCSVImporter sci = new StatsCanCSVImporter(fileLocation, sourceUnits);
-            sci.parse();
-            setStatsCanYields(sci.getYields());
-            System.out.println(inputHandler.outputMapStatus("StatsCan yields", true));
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
-            System.out.println(inputHandler.outputMapStatus("StatsCan yields", false));
-        }
+        return;
     }
 
     /**
@@ -228,14 +120,12 @@ public class Driver {
         return statsCanYields;
     }
 
-    //No getter for producer units - meant to stay encapsulated.
-
     /**
-     * Get the input handler.
-     * @return the input handler.
+     * Getter for producer yields.
+     * @return the producer yields.
      */
-    public InputHandler getInputHandler() {
-        return inputHandler;
+    public Map<Integer, ArrayList<Crop>> getProducerYields() {
+        return producerYields;
     }
 
     /**
@@ -252,14 +142,6 @@ public class Driver {
      */
     public int getStatsCanYieldsUnits() {
         return statsCanYieldsUnits;
-    }
-
-    /**
-     * Update the input handler.
-     * @param inputHandler the new input handler.
-     */
-    public void setInputHandler(InputHandler inputHandler) {
-        this.inputHandler = inputHandler;
     }
 
     /**
@@ -302,6 +184,8 @@ public class Driver {
         //only set the producer if it is not an administrator!
         if (!producer.toLowerCase().equals("admin")) {
             this.producer = producer;
+        } else {
+            this.producer = "admin";
         }
 
     }
