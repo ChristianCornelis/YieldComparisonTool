@@ -56,4 +56,30 @@ public class Exceptions {
             super(msg);
         }
     }
+
+    /**
+     * Exception for when DB Deletions fails.
+     */
+    public static class DatabaseDeletionException extends Exception {
+        /**
+         * Constructor.
+         * @param msg the message to contain in the exception.
+         */
+        public DatabaseDeletionException(String msg) {
+            super(msg);
+        }
+    }
+
+    /**
+     * Exception to be thrown when no records deleted from DB.
+     */
+    public static class NoDatabaseRecordsRemovedException extends Exception {
+        /**
+         * Constructor.
+         * @param msg the message to contain in the exception.
+         */
+        public NoDatabaseRecordsRemovedException(String msg) {
+            super(msg);
+        }
+    }
 }
