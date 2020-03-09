@@ -1,4 +1,4 @@
-package project;
+package project.helpers;
 
 import project.data.Crop;
 
@@ -16,10 +16,9 @@ public abstract class PromptHelper {
     public static final int IMPORT_KG_PER_HA = 0;
     public static final int IMPORT_LB_PER_AC = 1;
     public static final int IMPORT_BU_PER_AC = 2;
-
-    public static final int CANCEL_TASK = 3;
-    public static final int DELETE_PRODUCER_RECORD = 4;
+    public static final int DELETE_PRODUCER_RECORD = 3;
     public static final int QUIT = 5;
+    public static final int CANCEL_TASK = 9;
 
     /**
      * Builds a string representing the status of a given map.
@@ -132,10 +131,11 @@ public abstract class PromptHelper {
         return "Enter a valid option for producer record deletion below:\n" +
                 "\n(" + DeletionHandler.DELETE_ALL_RECORDS +
                 ") - Delete all records imported by the current producer." +
-                "\n(" + DeletionHandler.DELETE_RECORDS_BY_YEAR +
+                " ** NOT implemented\n(" + DeletionHandler.DELETE_RECORDS_BY_YEAR +
                 ") - Delete all records imported by the current producer in a specific year." +
                 "\n(" + DeletionHandler.DELETE_RECORDS_BY_RANGE +
-                ") - Delete all records imported by the current producer in a range of years.";
+                ") - Delete all records imported by the current producer in a range of years.  ** NOT implemented" +
+                "\n(" + CANCEL_TASK + ") - Cancel this task";
     }
 
     /**
@@ -144,5 +144,15 @@ public abstract class PromptHelper {
      */
     public String getProducerDeletionByYearPrompt() {
         return "Enter a year to delete all producer records from:";
+    }
+
+    /**
+     * Get the prompt for successful record deletion.
+     * @param year the year
+     * @param producer the producer
+     * @return the string.
+     */
+    public String getProducerDeletionSuccessfulPrompt(int year, String producer) {
+        return "Records from " + year + " for producer '" + producer + "' successfully deleted.";
     }
 }

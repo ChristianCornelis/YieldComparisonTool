@@ -3,14 +3,18 @@ package project;
 import project.comparators.YieldComparator;
 import project.data.Crop;
 import project.database.DatabaseClient;
+import project.helpers.DeletionHandler;
+import project.helpers.InputHandler;
+import project.helpers.PromptHelper;
 import project.importers.ProducerCSVImporter;
 import project.importers.StatsCanCSVImporter;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
-import static project.PromptHelper.*;
+import static project.helpers.PromptHelper.*;
 
 /**
  * Temporary driver class for the entire project.
@@ -63,6 +67,10 @@ public class Driver {
      */
     public void importFile(int action) {
         int[] validImportActions = {IMPORT_KG_PER_HA, IMPORT_LB_PER_AC, IMPORT_BU_PER_AC, CANCEL_TASK};
+        if (producer.equals("admin") && action == IMPORT_PRODUCER_CSV) {
+            System.out.println("Admins cannot import producer data!");
+            return;
+        }
         int importUnits = inputHandler.chooseAction(
                 inputHandler.getUnitsPrompt("Choose the units the yields are in:\n"),
                 validImportActions);
@@ -124,6 +132,9 @@ public class Driver {
         return inputHandler.getBasicInput();
     }
 
+    /**
+     * Helper to get the producer name.
+     */
     private void getProducer() {
         System.out.println(PromptHelper.getProducerPrompt());
         setProducer(inputHandler.getBasicInput());
@@ -172,18 +183,30 @@ public class Driver {
         int action = -1;
         while (action != QUIT) {
             System.out.println(inputHandler.getYieldsStatus(producerYields, statsCanYields));
-            int[] validActions = {IMPORT_PRODUCER_CSV, IMPORT_STATSCAN_CSV, COMPARE_PRODUCER_STATSCAN_YIELDS, QUIT};
+            int[] validActions = {
+                    IMPORT_PRODUCER_CSV, IMPORT_STATSCAN_CSV,
+                    COMPARE_PRODUCER_STATSCAN_YIELDS,
+                    DELETE_PRODUCER_RECORD, QUIT
+            };
             action = inputHandler.chooseAction(inputHandler.getActionPrompt(), validActions);
             if (action == IMPORT_PRODUCER_CSV || action == IMPORT_STATSCAN_CSV) {
                 importFile(action);
             } else if (action == COMPARE_PRODUCER_STATSCAN_YIELDS) {
                 compareYields();
+            } else if (action == DELETE_PRODUCER_RECORD) {
+                deleteProducerRecord();
             }
         }
 
         return;
     }
 
+    private void deleteProducerRecord() {
+        DeletionHandler dh = new DeletionHandler(producer, inputHandler, dc);
+        dh.deleteProducerRecord();
+        //reset cache
+        loadPreviousProducerData();
+    }
     /**
      * Helper to call on Producer data importer.
      * @param sourceUnits the units the source data is in
@@ -192,9 +215,10 @@ public class Driver {
     private void importProducerCSV(int sourceUnits, String fileLocation) {
         setProducerYieldsUnits(sourceUnits);
         try {
-            ProducerCSVImporter pci = new ProducerCSVImporter(fileLocation, sourceUnits, producer);
+            ProducerCSVImporter pci = new ProducerCSVImporter(fileLocation, sourceUnits, producer, getProducerYields());
             pci.parse();
-            setProducerYields(pci.getYields());
+            //have to merge maps to avoid kicking caches - need to avoid unnecessary queries
+            setProducerYields(mergeMaps(pci.getYields(), getProducerYields()));
             System.out.println(inputHandler.outputMapStatus("Producer yields", true));
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
@@ -210,9 +234,9 @@ public class Driver {
     private void importStatsCanCSV(int sourceUnits, String fileLocation) {
         setStatsCanYieldsUnits(sourceUnits);
         try {
-            StatsCanCSVImporter sci = new StatsCanCSVImporter(fileLocation, sourceUnits);
+            StatsCanCSVImporter sci = new StatsCanCSVImporter(fileLocation, sourceUnits, getStatsCanYields());
             sci.parse();
-            setStatsCanYields(sci.getYields());
+            setStatsCanYields(mergeMaps(sci.getYields(), getStatsCanYields()));
             System.out.println(inputHandler.outputMapStatus("StatsCan yields", true));
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
@@ -228,7 +252,13 @@ public class Driver {
         return statsCanYields;
     }
 
-    //No getter for producer units - meant to stay encapsulated.
+    /**
+     * Getter for producer yields.
+     * @return the producer yields.
+     */
+    public Map<Integer, ArrayList<Crop>> getProducerYields() {
+        return producerYields;
+    }
 
     /**
      * Get the input handler.
@@ -271,6 +301,17 @@ public class Driver {
     }
 
     /**
+     * Merges two yield caches. Used to maintain state between imports and previously-imported data.
+     * @param map1 first map
+     * @param map2 second map
+     * @return the merged caches.
+     */
+    public Map<Integer, ArrayList<Crop>> mergeMaps(Map<Integer, ArrayList<Crop>> map1, Map<Integer, ArrayList<Crop>> map2) {
+        Map<Integer, ArrayList<Crop>> merged = new HashMap<>(map1);
+        merged.putAll(map2);
+        return merged;
+    }
+    /**
      * Setter for statsCanYields map.
      * @param statsCanYields the yields to set to.
      */
@@ -302,6 +343,8 @@ public class Driver {
         //only set the producer if it is not an administrator!
         if (!producer.toLowerCase().equals("admin")) {
             this.producer = producer;
+        } else {
+            this.producer = "admin";
         }
 
     }
