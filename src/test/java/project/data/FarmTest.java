@@ -117,6 +117,13 @@ public class FarmTest {
     }
 
     @SuppressWarnings("MissingJavadocMethod")
+    @Test
+    public void testNoArgConstructor() {
+        Farm test = new Farm();
+        assertTrue(test instanceof Farm);
+    }
+
+    @SuppressWarnings("MissingJavadocMethod")
     public static void main(String[] args) {
 
         Result result = JUnitCore.runClasses(FarmTest.class);

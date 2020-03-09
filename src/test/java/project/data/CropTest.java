@@ -22,7 +22,7 @@ public class CropTest {
     }
 
     @SuppressWarnings("MissingJavadocMethod")
-    @Test
+    @Before
     public void testGetYield() {
         assertEquals(testCrop.getYield(), 100, 0);
     }
@@ -122,6 +122,13 @@ public class CropTest {
     public void testHashCode() {
         //essentially just check that a hash is generated
         assertTrue(testCrop.hashCode() > 0);
+    }
+
+    @SuppressWarnings("MissingJavadocMethod")
+    @Test
+    public void testNoArgConstructor() {
+        Crop test = new Crop();
+        assertTrue(test instanceof Crop);
     }
 
     @SuppressWarnings("MissingJavadocMethod")
