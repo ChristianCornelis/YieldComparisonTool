@@ -28,6 +28,9 @@ lint:
     paths:
       - build
       - .gradle
+  artifacts:
+    expose_as: "Checkstyle Results"
+    paths: ['build/reports/checkstyle/main.html']
 
 build:
   stage: build
@@ -49,8 +52,4 @@ test:
     paths:
       - build
       - .gradle
-
-  artifacts:
-    expose_as: "Checkstyle Results"
-    paths: ['build/reports/checkstyle/main.html']
     
