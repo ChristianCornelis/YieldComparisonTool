@@ -149,4 +149,8 @@ enforce the fact that producers should not be capable of seeing or using other p
  the Crop class and PromptHelper class (as they can be accessed directly), and the Producer yield maps found inn the YieldComparator and YieldComparisonToolDriver.
  - I attempted to abstract my class definitions as much as possible by defining interfaces that were then used by classes. This reinforced extendability while maintaining specific implementation
  details at the lowest level possible.
+ 
+ ## References
+ - The Google Cloud Firestore docs were of huge help during this milestone: https://firebase.google.com/docs/firestore
+    - used this documentation for querying the database for storage, retrieval, and deletion, as well as hooking up to Firebase from my application
 
