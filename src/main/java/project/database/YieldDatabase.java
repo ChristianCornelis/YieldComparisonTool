@@ -18,8 +18,7 @@ public interface YieldDatabase {
      * @param yield the yield itself
      * @throws project.Exceptions.DatabaseWriteException if an exception occurs.
      */
-   void addNewYield(CollectionReference colRef, Crop yield)
-           throws Exceptions.DatabaseWriteException;
+   void addNewYield(CollectionReference colRef, Crop yield) throws Exceptions.DatabaseWriteException;
 
     /**
      * Inits a connection to the database.

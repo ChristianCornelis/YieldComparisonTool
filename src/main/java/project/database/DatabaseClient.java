@@ -9,11 +9,8 @@ import com.google.firebase.cloud.FirestoreClient;
 import com.google.cloud.firestore.CollectionReference;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
-//import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
-//import com.google.cloud.firestore.WriteResult;
-//import com.google.cloud.firestore.FieldValue;
 
 import project.Exceptions;
 import project.data.Crop;
@@ -28,10 +25,9 @@ import java.util.Map;
 import java.util.List;
 
 /**
- * Controller for database connections.
+ * Client for database connections.
  */
 public class DatabaseClient implements StatsCanDatabase, ProducerDatabase, YieldDatabase {
-//    private CollectionReference producers;
     private Firestore dbClient;
     /**
      * Inits the connection to the db.
@@ -170,6 +166,35 @@ public class DatabaseClient implements StatsCanDatabase, ProducerDatabase, Yield
         }
 
         return yields;
+    }
+
+    /**
+     * Remove a record matching the year and producer specified.
+     * @param year the year
+     * @param producer the producer name
+     * @throws Exceptions.DatabaseDeletionException on err
+     * @throws Exceptions.NoDatabaseRecordsRemovedException on no records deleted.
+     */
+    public void removeYieldByYearAndProducer(int year, String producer)
+            throws Exceptions.DatabaseDeletionException, Exceptions.NoDatabaseRecordsRemovedException {
+        Boolean recordsDeleted = false;
+        CollectionReference colRef = dbClient.collection("producerYields");
+        try {
+            ApiFuture<QuerySnapshot> future = colRef.whereEqualTo("producer", producer).whereEqualTo("year", year).get();
+            List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+            for (QueryDocumentSnapshot doc : documents) {
+                doc.getReference().delete();
+                recordsDeleted = true;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new Exceptions.DatabaseDeletionException(
+                    "ERROR failed to delete records with year " + year + " and producer " + producer);
+        }
+        if (!recordsDeleted) {
+            throw new Exceptions.NoDatabaseRecordsRemovedException(
+                    "No records to be removed for year " + year + " and producer '" + producer + "'");
+        }
     }
 
 }
