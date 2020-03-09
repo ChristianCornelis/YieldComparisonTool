@@ -5,7 +5,7 @@ import project.data.Crop;
 import java.util.ArrayList;
 
 /**
- * Helper class for building prompt status strings.
+ * Helper class for building prompt and status strings.
  */
 public abstract class PromptHelper {
 

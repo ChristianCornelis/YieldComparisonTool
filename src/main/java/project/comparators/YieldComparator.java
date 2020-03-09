@@ -8,6 +8,7 @@ import project.converters.Converter;
 import project.data.Crop;
 import project.Exceptions.InvalidComparatorParamsException;
 import project.Exceptions.BushelsConversionKeyNotFoundException;
+import project.data.Farm;
 
 /**
  * Comparator class for yields.
@@ -23,19 +24,14 @@ public class YieldComparator implements Comparator {
 
     /**
      * Constructor.
-     * @param pYieldUnits the producer yield units.
-     * @param sYieldUnits the StatsCan yield units.
      * @param tYieldUnits the target units the comparison should be done in.
      * @param pYields the producer yields map.
      * @param sYields the StatsCan yields map.
      */
-    public YieldComparator(
-            int pYieldUnits, int sYieldUnits, int tYieldUnits,
+    public YieldComparator(int tYieldUnits,
             Map<Integer, ArrayList<Crop>> pYields, Map<Integer, ArrayList<Crop>> sYields
     ) {
         converter = new Converter();
-        producerUnits = pYieldUnits;
-        statsCanUnits = sYieldUnits;
         targetUnits = tYieldUnits;
         producerYields = pYields;
         statsCanYields = sYields;
@@ -77,9 +73,9 @@ public class YieldComparator implements Comparator {
      */
     public double compareCropsByYear(String crop, int year)
             throws InvalidComparatorParamsException, BushelsConversionKeyNotFoundException {
-        double producerYield = retrieveProducerCropYield(crop, producerYields.get(year));
+        double producerYield = retrieveYield(crop, producerYields.get(year));
 
-        double statsCanYield = retrieveStatsCanCropYield(crop, statsCanYields.get(year));
+        double statsCanYield = retrieveYield(crop, statsCanYields.get(year));
 
         return getDifference(producerYield, statsCanYield);
 
@@ -128,44 +124,32 @@ public class YieldComparator implements Comparator {
      * @throws InvalidComparatorParamsException if the crop does not exist in the arraylist.
      * @throws BushelsConversionKeyNotFoundException if the crop cannot be converted to bushels if necessary.
      */
-    private double retrieveStatsCanCropYield(String crop, ArrayList<Crop> yields)
+    private double retrieveYield(String crop, ArrayList<Crop> yields)
             throws InvalidComparatorParamsException, BushelsConversionKeyNotFoundException {
+        Boolean isProd = false;
         for (Crop yield : yields) {
+            if (yield instanceof Farm)
+                isProd = true;
             if (yield.getType().equals(crop)) {
                 if (yield.getUnits() == targetUnits) {
                     return yield.getYield();
                 } else {
-                    return converter.convertYield(yield.getYield(), crop, statsCanUnits, targetUnits);
+                    return converter.convertYield(yield.getYield(), crop, yield.getUnits(), targetUnits);
                 }
             }
         }
-        throw new InvalidComparatorParamsException(
-                "The Statistics Canada yield map does not contain the crop " + crop + "!"
-        );
-    }
 
-    /**
-     * Retrieves producer yields if they are present.
-     * @param crop the crop type being investigated.
-     * @param yields ArrayList of all crop yields from a given year.
-     * @return the desired crop yield.
-     * @throws InvalidComparatorParamsException if the crop does not exist in the arraylist.
-     * @throws BushelsConversionKeyNotFoundException if the crop cannot be converted to bushels if necessary.
-     */
-    private double retrieveProducerCropYield(String crop, ArrayList<Crop> yields)
-            throws InvalidComparatorParamsException, BushelsConversionKeyNotFoundException {
-        for (Crop yield : yields) {
-            if (yield.getType().equals(crop)) {
-                if (yield.getUnits() == targetUnits) {
-                    return yield.getYield();
-                } else {
-                    return converter.convertYield(yield.getYield(), crop, producerUnits, targetUnits);
-                }
-            }
+        //fork error msg based on class type determined above
+        if (isProd) {
+            throw new InvalidComparatorParamsException(
+                    "The Producer yield map does not contain the crop " + crop + "!"
+            );
+        } else {
+            throw new InvalidComparatorParamsException(
+                    "The Statistics Canada yield map does not contain the crop " + crop + "!"
+            );
         }
-        throw new InvalidComparatorParamsException(
-                "The Producer yield map does not contain the crop " + crop + "!"
-        );
+
     }
 
     /**
