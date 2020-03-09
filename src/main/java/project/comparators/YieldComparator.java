@@ -132,7 +132,7 @@ public class YieldComparator implements Comparator {
         for (Crop yield : yields) {
             if (yield instanceof Farm)
                 isProd = true;
-            if (yield.getType().equals(crop)) {
+            if (yield.getType().toLowerCase().equals(crop.toLowerCase())) {
                 if (yield.getUnits() == targetUnits) {
                     return yield.getYield();
                 } else {
