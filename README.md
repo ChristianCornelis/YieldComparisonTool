@@ -35,6 +35,7 @@ I would suggest running via `gradle run -q --console=plain` to reduce the overla
 - The App (unless people play around with it during review - pls no) will be populated with producer and Statistics Canada data for 2018 and 2019.
     - Producer data will be input by the Producer "Tester", so if you want to have that data pre-loaded you MUST enter that as the producer name at login.
 - By logging in with "admin" or "Admin" you simply don't have the ability to import producer data. I was going to extend this so that producers couldn't import StatsCan data, but didn't have time.
+- No testing was done for if Firebase query quotes are exceeded, or if database connections fail!
 
 ## Caching Behavior Database Limitations
 - When the application starts up, it will attempt to fill the local caches. If the producer using the application has imported data before, then that imported data will be cached locally and will be
