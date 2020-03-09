@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("MissingJavadocMethod")
 public class CropTest {
@@ -67,6 +68,13 @@ public class CropTest {
 
     @SuppressWarnings("MissingJavadocMethod")
     @Test
+    public void testSetUnits() {
+        testCrop.setUnits(Crop.BU_PER_AC);
+        assertEquals(testCrop.getUnits(), Crop.BU_PER_AC);
+    }
+
+    @SuppressWarnings("MissingJavadocMethod")
+    @Test
     public void testToString() {
         String exp = "Crop{units=" + Crop.KG_PER_HA + ", type='Corn', yield=100.0, year=2020}";
         assertEquals(exp, testCrop.toString());
@@ -81,6 +89,39 @@ public class CropTest {
         exp.put("units", Crop.KG_PER_HA);
         exp.put("year", 2020);
         assertEquals(testCrop.toMap(), exp);
+    }
+
+    @SuppressWarnings({"MissingJavadocMethod", "MethodName"})
+    @Test
+    public void testEquals_TwoEqualObjs() {
+        Crop testDupe = new Crop("Corn", 100, Crop.KG_PER_HA, 2020);
+        assertEquals(true, testCrop.equals(testDupe));
+    }
+
+    @SuppressWarnings({"MissingJavadocMethod", "MethodName"})
+    @Test
+    public void testEquals_TwoSlightlyDifferentObjs() {
+        Crop testDupe = new Crop("Corn", 1000, Crop.KG_PER_HA, 2020);
+        assertEquals(false, testCrop.equals(testDupe));
+    }
+
+    @SuppressWarnings({"MissingJavadocMethod", "MethodName"})
+    @Test
+    public void testEquals_SameObj() {
+        assertEquals(true, testCrop.equals(testCrop));
+    }
+
+    @SuppressWarnings({"MissingJavadocMethod", "MethodName"})
+    @Test
+    public void testEquals_BlankObj() {
+        assertEquals(false, testCrop.equals(new Object()));
+    }
+
+    @SuppressWarnings("MissingJavadocMethod")
+    @Test
+    public void testHashCode() {
+        //essentially just check that a hash is generated
+        assertTrue(testCrop.hashCode() > 0);
     }
 
     @SuppressWarnings("MissingJavadocMethod")

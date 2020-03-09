@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("MissingJavadocMethod")
 public class FarmTest {
@@ -82,10 +83,43 @@ public class FarmTest {
         assertEquals(testFarm.toMap(), exp);
     }
 
+    @SuppressWarnings({"MissingJavadocMethod", "MethodName"})
+    @Test
+    public void testEquals_TwoEqualObjs() {
+        Farm testDupe = new Farm("Farm", "Guelph", "Corn", 100, Crop.KG_PER_HA, "Prod", 2020);
+        assertEquals(true, testFarm.equals(testDupe));
+    }
+
+    @SuppressWarnings({"MissingJavadocMethod", "MethodName"})
+    @Test
+    public void testEquals_TwoSlightlyDifferentObjs() {
+        Farm testDupe = new Farm("Farm", "Guelph", "Corn", 10000, Crop.KG_PER_HA, "Prod", 2020);
+        assertEquals(false, testFarm.equals(testDupe));
+    }
+
+    @SuppressWarnings({"MissingJavadocMethod", "MethodName"})
+    @Test
+    public void testEquals_SameObj() {
+        assertEquals(true, testFarm.equals(testFarm));
+    }
+
+    @SuppressWarnings({"MissingJavadocMethod", "MethodName"})
+    @Test
+    public void testEquals_BlankObj() {
+        assertEquals(false, testFarm.equals(new Object()));
+    }
+
+    @SuppressWarnings("MissingJavadocMethod")
+    @Test
+    public void testHashCode() {
+        //essentially just check that a hash is generated
+        assertTrue(testFarm.hashCode() > 0);
+    }
+
     @SuppressWarnings("MissingJavadocMethod")
     public static void main(String[] args) {
 
-        Result result = JUnitCore.runClasses(CropTest.class);
+        Result result = JUnitCore.runClasses(FarmTest.class);
         for (Failure failure : result.getFailures()) {
             System.out.println(failure.toString());
         }
