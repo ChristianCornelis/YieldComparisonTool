@@ -119,7 +119,7 @@ public class Crop {
         map.put("yield", yield);
         map.put("type", type);
         map.put("units", units);
-
+        map.put("year", year);
         return map;
     }
 }

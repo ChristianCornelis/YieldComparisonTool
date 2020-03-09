@@ -49,7 +49,7 @@ public class ProducerCSVImporter extends CSVImporter {
                 System.out.println(e.getMessage());
             }
             Farm toPut = new Farm(farmName, location, cropName, yield, super.getSourceUnits(), producer, year);
-            getDb().addNewProducerYield(year, toPut, producer);
+            getDb().addNewProducerYield(toPut);
             setYield(year, toPut);
         }
     }

@@ -49,6 +49,9 @@ I would suggest running via `gradle run -q --console=plain` to reduce the overla
 - As a producer, I want to be able to import my production data once and have it stored between application uses so I do not have to import data every time the app is used.
     - Given that I have imported a CSV file successfully, when I quit the application, and re-open it my data is stored for use at a later time.
     - Given that I have not imported a CSV file successfully, when I quit the application and re-open it, no producer data is populated in the application.
+- As an administrator, I want to be able to import StatsCan data once and have it stored between application uses so I do not have to import data every time the app is used.
+    - Given that I have imported a CSV file successfully, when I quit the application, and re-open it my data is stored for use at a later time.
+    - Given that I have not imported a CSV file successfully, when I quit the application and re-open it, no producer data is populated in the application.
 
 # M1 Documentation
 ## M1 User Stories

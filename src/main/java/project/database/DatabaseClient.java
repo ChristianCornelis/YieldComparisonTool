@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * Controller for database connections.
  */
-public class DatabaseClient implements ProducerDatabase, YieldDatabase {
+public class DatabaseClient implements StatsCanDatabase, ProducerDatabase, YieldDatabase {
 //    private CollectionReference producers;
     private Firestore dbClient;
     /**
@@ -68,14 +68,25 @@ public class DatabaseClient implements ProducerDatabase, YieldDatabase {
 
     /**
      * Adds a new producer yield record to the database.
-     * @param year the year of the yield
      * @param yield the yield datastructure, a Farm object in this case (extends Crop).
-     * @param producer the producer
      */
-    public void addNewProducerYield(int year, Crop yield, String producer) {
+    public void addNewProducerYield(Crop yield) {
         CollectionReference colRef = dbClient.collection("producerYields");
         try {
-            addNewYield(colRef, year, yield, producer);
+            addNewYield(colRef, yield);
+        } catch (Exceptions.DatabaseWriteException dwe) {
+            System.out.println(dwe.getMessage());
+        }
+    }
+
+    /**
+     * Adds a new StatsCan yield record to the database.
+     * @param yield the yield datastructure, a Crop object in this case.
+     */
+    public void addNewStatsCanYield(Crop yield) {
+        CollectionReference colRef = dbClient.collection("statsCanYields");
+        try {
+            addNewYield(colRef, yield);
         } catch (Exceptions.DatabaseWriteException dwe) {
             System.out.println(dwe.getMessage());
         }
@@ -84,17 +95,13 @@ public class DatabaseClient implements ProducerDatabase, YieldDatabase {
     /**
      * Adds a new yield to the db.
      * @param colRef The reference to the collection used to store the new yield.
-     * @param year the year of the yield
      * @param yield the yield itself
-     * @param source the source of the yield (StatsCan, or producer name)
      * @throws project.Exceptions.DatabaseWriteException if an exception occurs.
      */
-    public void addNewYield(CollectionReference colRef, int year, Crop yield, String source)
+    public void addNewYield(CollectionReference colRef, Crop yield)
             throws Exceptions.DatabaseWriteException {
         try {
             Map<String, Object> data = yield.toMap();
-            data.put("year", year);
-            data.put("producer", source);
             ApiFuture<DocumentReference> addedDocRef = colRef.add(data);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -122,6 +129,23 @@ public class DatabaseClient implements ProducerDatabase, YieldDatabase {
     }
 
     /**
+     * Retrieve all remotely-stored yields from StatsCan.
+     * @return map of all StatsCan yields.
+     */
+    public Map<Integer, ArrayList<Crop>> retrieveStatsCanYields() {
+        CollectionReference colRef = dbClient.collection("statsCanYields");
+        ApiFuture<QuerySnapshot> future = colRef.get();
+        List<QueryDocumentSnapshot> documents = null;
+        try {
+            documents = future.get().getDocuments();
+        } catch (Exception e) {
+            //TODO: Custom error here.
+            System.out.println(e.getMessage());
+        }
+        return convertRecordsToMap(documents);
+    }
+
+    /**
      * Converts records from the DB to a map.
      * @param documents database records to be parsed.
      * @return a map containing years as keys
@@ -130,6 +154,7 @@ public class DatabaseClient implements ProducerDatabase, YieldDatabase {
         Map<Integer, ArrayList<Crop>> yields = new HashMap<>();
         Crop crop = null;
         for (QueryDocumentSnapshot doc : documents) {
+            //if we have a "producer" field, we're dealing with a Farm object.
             if (doc.getData().keySet().contains("producer")) {
                 crop = doc.toObject(Farm.class);
             } else {

@@ -112,4 +112,12 @@ public abstract class PromptHelper {
     public String getWelcomeBackMsg(String producer) {
         return "The previously-imported yields for producer '" + producer + "' have been re-loaded.";
     }
+
+    /**
+     * Prompt for successful retrieval of previously-loaded StatsCan data.
+     * @return the string to be output.
+     */
+    public String getStatsCanDataLoadedMsg() {
+        return "The previously-imported yields from Statistics Canada have been re-loaded.";
+    }
 }
