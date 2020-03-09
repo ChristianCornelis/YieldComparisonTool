@@ -89,7 +89,7 @@ public class Farm extends Crop {
         return "Farm{" +
                 "name='" + name + '\'' +
                 ", location='" + location + '\'' +
-                ", crop=" + super.toString() +
+                ", " + super.toString() +
                 '}';
     }
 
