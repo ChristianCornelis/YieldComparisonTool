@@ -15,11 +15,10 @@ public interface YieldDatabase {
     /**
      * Adds a new yield to the db.
      * @param colRef The reference to the collection used to store the new yield.
-     * @param year the year of the yield
      * @param yield the yield itself
      * @throws project.Exceptions.DatabaseWriteException if an exception occurs.
      */
-   void addNewYield(CollectionReference colRef, int year, Crop yield)
+   void addNewYield(CollectionReference colRef, Crop yield)
            throws Exceptions.DatabaseWriteException;
 
     /**

@@ -11,14 +11,13 @@ import java.util.Map;
 public interface StatsCanDatabase {
     /**
      * Adds a new StatsCan yield record to the database.
-     * @param year the year of the yield
      * @param yield the yield datastructure, a Crop object in this case.
      */
-    void addNewStatsCanYield(int year, Crop yield);
+    void addNewStatsCanYield(Crop yield);
+/**
+ * Retrieve all remotely-stored yields from StatsCan.
+ * @return map of all StatsCan yields.
+ */
 
-    /**
-     * Retrieve all remotely-stored yields from StatsCan.
-     * @return map of all StatsCan yields.
-     */
     Map<Integer, ArrayList<Crop>> retrieveStatsCanYields();
 }

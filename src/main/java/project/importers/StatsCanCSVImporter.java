@@ -60,7 +60,7 @@ public class StatsCanCSVImporter extends CSVImporter {
                     continue;
                 }
                 Crop toPut = new Crop(cropName, yield, super.getSourceUnits(), year);
-                getDb().addNewStatsCanYield(year, toPut);
+                getDb().addNewStatsCanYield(toPut);
                 setYield(year, toPut);
                 tokenCnt++;
             }

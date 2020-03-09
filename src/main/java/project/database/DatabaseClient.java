@@ -68,13 +68,12 @@ public class DatabaseClient implements StatsCanDatabase, ProducerDatabase, Yield
 
     /**
      * Adds a new producer yield record to the database.
-     * @param year the year of the yield
      * @param yield the yield datastructure, a Farm object in this case (extends Crop).
      */
-    public void addNewProducerYield(int year, Crop yield) {
+    public void addNewProducerYield(Crop yield) {
         CollectionReference colRef = dbClient.collection("producerYields");
         try {
-            addNewYield(colRef, year, yield);
+            addNewYield(colRef, yield);
         } catch (Exceptions.DatabaseWriteException dwe) {
             System.out.println(dwe.getMessage());
         }
@@ -82,13 +81,12 @@ public class DatabaseClient implements StatsCanDatabase, ProducerDatabase, Yield
 
     /**
      * Adds a new StatsCan yield record to the database.
-     * @param year the year of the yield
      * @param yield the yield datastructure, a Crop object in this case.
      */
-    public void addNewStatsCanYield(int year, Crop yield) {
+    public void addNewStatsCanYield(Crop yield) {
         CollectionReference colRef = dbClient.collection("statsCanYields");
         try {
-            addNewYield(colRef, year, yield);
+            addNewYield(colRef, yield);
         } catch (Exceptions.DatabaseWriteException dwe) {
             System.out.println(dwe.getMessage());
         }
@@ -97,11 +95,10 @@ public class DatabaseClient implements StatsCanDatabase, ProducerDatabase, Yield
     /**
      * Adds a new yield to the db.
      * @param colRef The reference to the collection used to store the new yield.
-     * @param year the year of the yield
      * @param yield the yield itself
      * @throws project.Exceptions.DatabaseWriteException if an exception occurs.
      */
-    public void addNewYield(CollectionReference colRef, int year, Crop yield)
+    public void addNewYield(CollectionReference colRef, Crop yield)
             throws Exceptions.DatabaseWriteException {
         try {
             Map<String, Object> data = yield.toMap();
