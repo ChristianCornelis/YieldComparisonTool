@@ -48,7 +48,7 @@ I would suggest running via `gradle run -q --console=plain` to reduce the overla
 - Tested crops include Faba beans (with "faba_beans") Corn (with "corn" and "Corn"), soybeans, oats, sugar beets (using "sugar_beets").
 
 ### Current State of the Application
-- The App (unless people play around with it during review - pls no) will be populated with producer and Statistics Canada data for 2018 and 2019.
+- The App (unless people play around with it during review - pls no) will be populated with producer and Statistics Canada data for 2018 and 2019  from the `statscan_lite.csv` and `producer_lite.csv` files..
     - Producer data will be input by the Producer "Tester", so if you want to have that data pre-loaded you MUST enter that as the producer name at login.
 - By logging in with "admin" or "Admin" you simply don't have the ability to import producer data. I was going to extend this so that producers couldn't import StatsCan data, but didn't have time.
 -   - Don't use this login to compare yields, as no data will be present in the caches.
