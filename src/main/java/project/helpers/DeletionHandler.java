@@ -3,6 +3,8 @@ package project.helpers;
 import project.Exceptions;
 import project.database.DatabaseClient;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Helper class to handle connecting user input to deletion of producer records.
  * Temporary - web app will replace this class.
@@ -40,10 +42,14 @@ public class DeletionHandler {
                 try {
                     dbClient.removeYieldByYearAndProducer(year, producer);
                     System.out.println(inputHandler.getProducerDeletionSuccessfulPrompt(year, producer));
+                    //MUST sleep here to allow the database operations to sync - if not, caching issues persist.
+                    TimeUnit.SECONDS.sleep(3);
                 } catch (Exceptions.DatabaseDeletionException e) {
                     System.out.println(e.getMessage());
                 } catch (Exceptions.NoDatabaseRecordsRemovedException e) {
                     System.out.println(e.getMessage());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
                 break;
             case PromptHelper.CANCEL_TASK:

@@ -14,4 +14,6 @@
 | Explanation | The crop grown. | The **yield** in the particular year specified in the header. |... | ...
 - See the sample file in `src/main/resources/statscan_lite.csv` for additional clarification. Again, there is essentially no error-checking, so ensure you adhere to the schema.
 
+- In order for comparisons to be made correctly, "Crop type" and "Type of crop" MUST contain the same name for a crop grown if they are to be compared against.
 - Standard CSV rules apply to these files - if you have a string value that contains a comma it MUST be wrapped in double quotes.
+- You must know what units each CSV file are in - you'll be prompted to specify when importing.

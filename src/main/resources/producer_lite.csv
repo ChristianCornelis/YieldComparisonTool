@@ -1,5 +1,5 @@
 Farm,Location,Crop type,Year,Yield
-Fern Hill Rd,"Ailsa Craig, ON",Corn for grain,2018,210
+Fern Hill Rd,"Ailsa Craig, ON",Corn,2018,210
 Co-op,"Ailsa Craig, ON",Soybeans,2018,58
 Home Farm 1,"Ailsa Craig, ON",Wheat,2018,91
 Home Farm 2,"Ailsa Craig, ON",White beans,2018,44
@@ -29,7 +29,7 @@ Block Field,"Ailsa Craig, ON","Wheat, all",2018,82
 Cemetery Field,"Ailsa Craig, ON","Wheat, durum",2018,65
 Nairn Road,"Ailsa Craig, ON","Wheat, spring",2018,62
 Dwight's,"Ailsa Craig, ON","Wheat, winter",2018,58
-Thames River East,"Ailsa Craig, ON",Corn for grain,2019,170
+Thames River East,"Ailsa Craig, ON",Corn,2019,170
 Van Daele Farm 1,"Ailsa Craig, ON",Soybeans,2019,57
 Van Daele Farm 2,"Ailsa Craig, ON",Wheat,2019,76
 Nursing Home,"Ailsa Craig, ON",White beans,2019,51

@@ -103,7 +103,7 @@ public class DatabaseClient implements StatsCanDatabase, ProducerDatabase, Yield
             ApiFuture<DocumentReference> addedDocRef = colRef.add(data);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            throw new Exceptions.DatabaseWriteException("ERROR Failed to write record to database.\n" + yield.toString());
+            throw new Exceptions.DatabaseWriteException("ERROR Failed to write record to database:\n\t" + yield.toString());
 
         }
     }

@@ -5,7 +5,7 @@
 - To run the tool, please run `gradle build` and then `gradle run`. If you are not running this via gradle in intellij,
 I would suggest running via `gradle run -q --console=plain` to reduce the overlay that gradle outputs.
 - `gradle check` will lint the application.
-- I would HIGHLY reccomend you run this outside of intellij - if an output message containing `ERROR`, it can sometimes freeze the console.
+- I would HIGHLY recommend you run this outside of intellij - if an output message containing `ERROR`, it can sometimes freeze the console.
 - Follow the on-screen instructions. Options are surrounded by parentheses.
     - Each option is selected by pressing the corresponding number. 
     - Some options are not implemented.
@@ -19,10 +19,14 @@ I would suggest running via `gradle run -q --console=plain` to reduce the overla
 - Ensured that instance variables had meaningful names
 - Added a glossary to this document to aid in the understanding of constant nomenclature
 - Organized source code into specific packages to make their uses clear.
+- Added the ability to compare with crops types that are more than one word long (albeit in a gross way)
+- Added the ability to compare crop yields in bushels per acre
 
 ### Importing Producer Data
 - When prompted for a **Producer** CSV to import (main menu choice 0), you must specify `src/main/resources/producer_lite.csv`, but keep in mind that the path is relative and may need to be different.
     - This CSVs units are **BUSHELS PER ACRE**, or menu choice **2** when prompted for units.
+    - Most data was mocked, as I was not able to get producer data from anyone other than my family's farm.
+    - Some errors may be output when using this file due to conversions not being capable of being done (see below) when storing the data in the database.
     
 ### Importing Statistics Canada Data
 - When prompted for a **Statistics Canada (StatsCan)** CSV to import (main menu choice 1), you must specify `src/main/resources/statscan_lite.csv`, but again, the path is relative.
@@ -31,15 +35,17 @@ I would suggest running via `gradle run -q --console=plain` to reduce the overla
 
 ### Comparing Yields
 - Some funky logic is at play with the yield comparator due to the way StatsCan names their crops, and how they're usually referred to. This will be refactored later on.
-    - In the meantime, I would suggest using any year from 2018-2019 to compare Soybeans.
-- Comparing yields in Bushels per acre is not supported at the moment. (It's not a fun conversion for hay and silage). **Update** -  It's looking like this might be forever-deprecated. If it is selected it will make you choose again until another option is chosen.
+    - In the meantime, I would suggest using any year from 2018-2019 to compare Soybeans, or any of the other crops listed further down.
+    - I was able to get around some of this weird behaviour by just renaming crops manually in StatsCan data to adhere to the same naming conventions as producer data.
+    - That being said, a limitation is that crops with even slightly-different naming conventions will NOT be able to be compared against.
+- Comparing yields in Bushels per acre is now working. (It's not a fun conversion for hay and silage though, so those aren't supported.)
     - Currently comparisons are being made on the first match of a crop that was grown by a producer in the given year.
         - Comparisons on crops with names that are more than one word long are now supported, but it a super gross way - spaces must be replaced with underscores. So "Corn for grain" would be replaced with "Corn_for_grain".
             - This is due to some wonky scanner behavior when trying to parse more than one string at a time, but it won't matter once this is done via a web interface :)
 - The status of what data is loaded into the application is input above the menu.
 - Assume no error checking was done on importing data in incorrect formats. I would suggest adhering to the above guidelines :D Also, see SCHEMA.md for data schemas.
 - Lowercase crop names should work for comparisons now!
-- Tested crops include Faba beans (with "faba_beans") Corn (with "corn_for_grain" - again, StatsCan naming conventions make it hard), and soybeans.
+- Tested crops include Faba beans (with "faba_beans") Corn (with "corn" and "Corn"), soybeans, oats, sugar beets (using "sugar_beets").
 
 ### Current State of the Application
 - The App (unless people play around with it during review - pls no) will be populated with producer and Statistics Canada data for 2018 and 2019.
