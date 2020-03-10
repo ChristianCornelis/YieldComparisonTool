@@ -19,7 +19,7 @@ public class Converter {
             entry("beans", 60),
             entry("alfalfa", 60),
             entry("rye", 56),
-            entry("claxseed", 56),
+            entry("flaxseed", 56),
             entry("oats", 32),
             entry("canola", 50),
             entry("wheat", 60),
@@ -184,14 +184,14 @@ public class Converter {
     public String bushelKeyConverter(String cropType) {
         if (!BU_TO_LBS.containsKey(cropType)) {
             if (cropType.toLowerCase().contains("beans")) {
-                return "Beans";
+                return "beans";
             } else if (cropType.toLowerCase().contains("corn") && !cropType.toLowerCase().contains("silage")) {
-                return "Corn";
+                return "corn";
             } else if (cropType.toLowerCase().contains(" ")) {
-                return cropType.split(" ")[0].replace(",", "");
+                return cropType.split(" ")[0].replace(",", "").toLowerCase();
             }
         }
-        return cropType;
+        return cropType.toLowerCase();
     }
     /**
      * Converts bushels per acre to kilos per hectare.
