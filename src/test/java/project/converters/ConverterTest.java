@@ -80,6 +80,45 @@ public class ConverterTest {
         double lbsPerAc = testConverter.buPerAcToLbsPerAc(1, "Fruit Salad");
     }
 
+    @SuppressWarnings({"MissingJavadocMethod", "MethodName"})
+    @Test(expected = Exceptions.BushelsConversionKeyNotFoundException.class)
+    public void TestLbsPerAcToBuPerAc_InvalidBushelConversionKey() throws Exceptions.BushelsConversionKeyNotFoundException {
+        double buPerAc = testConverter.lbsPerAcToBuPerAc(1, "Fruit Salad");
+    }
+
+    @SuppressWarnings({"MissingJavadocMethod", "MethodName"})
+    @Test
+    public void TestLbsPerAcToBuPerAc_ValidBushelConversionKey() throws Exceptions.BushelsConversionKeyNotFoundException {
+        double buPerAc = testConverter.lbsPerAcToBuPerAc(56, "Corn");
+        assertEquals(buPerAc, 1, 0.001);
+    }
+
+    @SuppressWarnings({"MissingJavadocMethod", "MethodName"})
+    @Test(expected = Exceptions.BushelsConversionKeyNotFoundException.class)
+    public void TestKgsPerHaToBuPerAc_InvalidBushelConversionKey() throws Exceptions.BushelsConversionKeyNotFoundException {
+        double buPerAc = testConverter.lbsPerAcToBuPerAc(1, "Fruit Salad");
+    }
+
+    @SuppressWarnings({"MissingJavadocMethod", "MethodName"})
+    @Test
+    public void TestKgsPerHaToBuPerAc_ValidBushelConversionKey() throws Exceptions.BushelsConversionKeyNotFoundException {
+        double buPerAc = testConverter.kgPerHaToBuPerAc(62.7677, "Corn");
+        assertEquals(buPerAc, 1, 0.001);
+    }
+
+    @SuppressWarnings({"MissingJavadocMethod", "MethodName"})
+    @Test
+    public void TestBuPerAcToKgPerHa_ValidKey() throws Exceptions.BushelsConversionKeyNotFoundException {
+        double buPerAc = testConverter.buPerAcToKgPerHa(1, "Corn");
+        assertEquals(buPerAc, 62.7677, 0.001);
+    }
+
+    @SuppressWarnings({"MissingJavadocMethod", "MethodName"})
+    @Test(expected = Exceptions.BushelsConversionKeyNotFoundException.class)
+    public void TestBuPerAcToKgPerHa_InvalidKey() throws Exceptions.BushelsConversionKeyNotFoundException {
+        double buPerAc = testConverter.buPerAcToKgPerHa(1, "Fruit Salad");
+    }
+
     @SuppressWarnings("MissingJavadocMethod")
     public static void main(String[] args) {
 

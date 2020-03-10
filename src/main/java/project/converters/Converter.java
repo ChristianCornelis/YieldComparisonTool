@@ -14,28 +14,28 @@ public class Converter {
     private static final double HA_TO_AC_FACTOR = 2.47105;
     private static final double AC_TO_HA_FACTOR = 0.404686;
     private static final Map<String, Integer> BU_TO_LBS = Map.ofEntries(
-            entry("Camelina", 50),
-            entry("Corn", 56),
-            entry("Beans", 60),
-            entry("Alfalfa", 60),
-            entry("Rye", 56),
-            entry("Flaxseed", 56),
-            entry("Oats", 32),
-            entry("Canola", 50),
-            entry("Wheat", 60),
-            entry("Sugar beets", 52),
-            entry("Millet", 50),
-            entry("Peas", 60),
-            entry("Mustard", 50),
-            entry("Lentils", 60),
-            entry("Coriander", 28),
-            entry("Sunflower", 30),
-            entry("Triticale", 52),
-            entry("Buckwheat", 50),
-            entry("Canary", 50),
-            entry("Hemp", 44),
-            entry("Safflower", 38),
-            entry("Barley", 48)
+            entry("camelina", 50),
+            entry("corn", 56),
+            entry("beans", 60),
+            entry("alfalfa", 60),
+            entry("rye", 56),
+            entry("claxseed", 56),
+            entry("oats", 32),
+            entry("canola", 50),
+            entry("wheat", 60),
+            entry("sugar beets", 52),
+            entry("millet", 50),
+            entry("peas", 60),
+            entry("mustard", 50),
+            entry("lentils", 60),
+            entry("coriander", 28),
+            entry("sunflower", 30),
+            entry("triticale", 52),
+            entry("buckwheat", 50),
+            entry("canary", 50),
+            entry("hemp", 44),
+            entry("safflower", 38),
+            entry("barley", 48)
     );
 
     /**
@@ -55,11 +55,15 @@ public class Converter {
                 case Crop.KG_PER_HA:
                     if (targetUnits == Crop.LBS_PER_AC) {
                         return kgPerHaToLbsPerAc(yield);
+                    } else if (targetUnits == Crop.BU_PER_AC) {
+                        return kgPerHaToBuPerAc(yield, cropType);
                     }
                     break;
                 case Crop.LBS_PER_AC:
                     if (targetUnits == Crop.KG_PER_HA) {
                         return lbsPerAcToKgPerHa(yield);
+                    } else if (targetUnits == Crop.BU_PER_AC) {
+                        return lbsPerAcToBuPerAc(yield, cropType);
                     }
                     break;
                 case Crop.BU_PER_AC:
@@ -136,12 +140,40 @@ public class Converter {
      * @throws BushelsConversionKeyNotFoundException if the crop type is not in the map of conversion factors.
      */
     public double buPerAcToLbsPerAc(double buPerAc, String cropType) throws BushelsConversionKeyNotFoundException {
-        String conversionKey = bushelKeyConverter(cropType);
+        String conversionKey = bushelKeyConverter(cropType.toLowerCase());
         if (BU_TO_LBS.containsKey(conversionKey)) {
             return buPerAc * BU_TO_LBS.get(conversionKey);
         } else {
             throw new BushelsConversionKeyNotFoundException("Key " + cropType + " not found in bushels conversion map.");
         }
+    }
+
+    /**
+     * Convert from lbsPerAc to buPerAc.
+     * @param lbsPerAc yield in pounds per acre
+     * @param cropType the crop
+     * @return the yield, in bushels per acre.
+     * @throws BushelsConversionKeyNotFoundException thrown if the crop type is not in the map of conversion factors.
+     */
+    public double lbsPerAcToBuPerAc(double lbsPerAc, String cropType) throws BushelsConversionKeyNotFoundException {
+        String conversionKey = bushelKeyConverter(cropType.toLowerCase());
+        if (BU_TO_LBS.containsKey(conversionKey)) {
+            return lbsPerAc / BU_TO_LBS.get(conversionKey);
+        } else {
+            throw new BushelsConversionKeyNotFoundException("Key " + cropType + " not found in bushels conversion map.");
+        }
+    }
+
+    /**
+     * Convert from kgPerHa to buPerAc.
+     * @param kgPerHa yield in pounds per acre
+     * @param cropType the crop
+     * @return the yield, in bushels per acre.
+     * @throws BushelsConversionKeyNotFoundException thrown if the crop type is not in the map of conversion factors.
+     */
+    public double kgPerHaToBuPerAc(double kgPerHa, String cropType) throws BushelsConversionKeyNotFoundException {
+        String conversionKey = bushelKeyConverter(cropType.toLowerCase());
+        return lbsPerAcToBuPerAc(kgPerHaToLbsPerAc(kgPerHa), cropType);
     }
 
     /**
@@ -169,13 +201,13 @@ public class Converter {
      * @throws BushelsConversionKeyNotFoundException if the crop type is not in the map of conversion factors.
      */
     public double buPerAcToKgPerHa(double buPerAc, String cropType) throws BushelsConversionKeyNotFoundException {
-        String conversionKey = bushelKeyConverter(cropType);
+        String conversionKey = bushelKeyConverter(cropType.toLowerCase());
 
         if (BU_TO_LBS.containsKey(conversionKey)) {
             return buPerAc * BU_TO_LBS.get(conversionKey) * LBS_PER_AC_TO_KG_PER_HA_FACTOR;
         } else {
             throw new BushelsConversionKeyNotFoundException(
-                    "ERROR: Crop " + cropType + " not found in bushels conversion map."
+                    "ERROR Crop " + cropType + " not found in bushels conversion map."
             );
         }
     }
