@@ -80,7 +80,7 @@ public class Driver {
                 importFile(action);
             } else if (action == COMPARE_PRODUCER_STATSCAN_YIELDS) {
                 ComparisonHelper ch = new ComparisonHelper(inputHandler, statsCanYields, producerYields);
-                ch.compareYields();
+                ch.setupCompareYields();
             } else if (action == DELETE_PRODUCER_RECORD) {
                 DeletionHandler dh = new DeletionHandler(producer, inputHandler, dc);
                 dh.deleteProducerRecord();

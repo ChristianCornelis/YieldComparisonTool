@@ -38,7 +38,7 @@ public class ComparisonHelper {
      */
     private int getComparisonUnits() {
         //Todo: Implement comparison in Bu/ac
-        int[] validComparisonActions = {IMPORT_KG_PER_HA, IMPORT_LB_PER_AC, /*IMPORT_BU_PER_AC,*/ CANCEL_TASK};
+        int[] validComparisonActions = {IMPORT_KG_PER_HA, IMPORT_LB_PER_AC, IMPORT_BU_PER_AC, CANCEL_TASK};
         return inputHandler.chooseAction(
                 inputHandler.getUnitsPrompt("Choose the units you wish to see yield differences in:\n"),
                 validComparisonActions
@@ -69,8 +69,8 @@ public class ComparisonHelper {
     /**
      * Method to compare yields.
      */
-    public void compareYields() {
-        if (producerYields == null || statsCanYields == null) {
+    public void setupCompareYields() {
+        if (producerYields == null || statsCanYields == null || producerYields.size() == 0 || statsCanYields.size() == 0) {
             System.out.println("Cannot perform comparison.");
             return;
         }
