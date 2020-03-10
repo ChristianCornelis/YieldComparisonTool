@@ -114,8 +114,9 @@ whole bunch of unnecessary complexity.
 - In this way, the core functionality of the project lives outside of the helpers package, which will become deprecated once a web app is put in front of this project.
 
 ### Unit Tests
-- Unit tests were completed on concrete classes that did not handle user input, database operations, or file parsing. I realize that this may not quite be 50% code coverage, but
-I'll be honest - I didn't want to mock out database connections, CSV importers libraries, and standard input.
+- Unit tests were completed on concrete classes that did not handle user input, database operations, or file parsing.
+    - This was done due to the HUGE effort required to mock database connections, CSV importers, and stdin.
+- According to my measurements I have approximately 50% coverage with the tests I implemented. I did not want to implement tests for classes I intend to refactor, so this worked out nicely.
 - All tests live in the `src/test/java/project` package, which has a structure that mirrors that of the main project package (for fleshed-out tests).
 - A stage was added to the CI to run the tests.
 
