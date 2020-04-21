@@ -16,9 +16,9 @@ jobs:
       with:
         java-version: 1.8
     - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+      run: chmod +x gradle
     - name: Lint all files
-      run: ./gradlew check
+      run: ./gradle check
   
   test:
    runs-on: ubuntu-latest
@@ -44,6 +44,6 @@ jobs:
       with:
         java-version: 1.8
     - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+      run: chmod +x gradle
     - name: Build with Gradle
-      run: ./gradlew --build-cache assemble
+      run: ./gradle --build-cache assemble
