@@ -14,17 +14,12 @@ jobs:
     - name: Set up JDK 1.11
       uses: actions/setup-java@v1
       with:
-        java-version: 1.8
+        java-version: 1.11
     - name: Lint files
       uses: eskatos/gradle-command-action@v1
       with:
           gradle-version: rc
           arguments: check
-          id: test
-    - uses: example/action-that-comments-on-the-pr@v0
-      if: failure()
-      with:
-        comment: Lint failed ${{ steps.gradle.outputs.build-scan-url }}
   
   test:
    runs-on: ubuntu-latest
