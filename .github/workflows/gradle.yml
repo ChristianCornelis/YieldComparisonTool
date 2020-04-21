@@ -1,0 +1,52 @@
+# This workflow will build a Java project with Gradle
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+
+name: Java CI with Gradle
+
+on:
+  [push, pull_request]
+
+jobs:
+  lint:
+   runs-on: ubuntu-latest
+   steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 1.11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.11
+    - name: Lint files
+      uses: eskatos/gradle-command-action@v1
+      with:
+          gradle-version: rc
+          arguments: check
+  
+  test:
+   runs-on: ubuntu-latest
+   steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 1.11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.11
+    - name: Run tests
+      uses: eskatos/gradle-command-action@v1
+      with:
+          gradle-version: rc
+          arguments: test
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 1.11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.11
+    - name: Build
+      uses: eskatos/gradle-command-action@v1
+      with:
+          gradle-version: rc
+          arguments: --build-cache assemble
