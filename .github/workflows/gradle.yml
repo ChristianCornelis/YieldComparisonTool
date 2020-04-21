@@ -18,7 +18,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Lint all files
-      run: ./gradlew check:
+      run: ./gradlew check
   
   test:
    runs-on: ubuntu-latest
